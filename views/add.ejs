@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adding new</title>
+</head>
+<body>
+    <h1>add your product</h1>
+
+    <form action="add" method="post">
+        <div>
+        <label for="tag">Give tag name</label>
+        <input type="text" name="tag" id="tag">
+    </div>
+        <div>
+        <label for="title">Give title name</label>
+        <input type="text" name="title" id="title">
+    </div>
+        <div>
+        <label for="cost">Give a cost/label>
+        <input type="text" name="cost" id="cost" >
+    </div>
+    <div>
+        <label for="body"> give content:</label>
+        <textarea name="body" id="body" cols="5" rows="5"></textarea>
+    </div>
+    <button> Click to submit</button>
+    </form>
+
+    <a href="/product/back-home">back to home</a>
+    
+</body>
+</html>
