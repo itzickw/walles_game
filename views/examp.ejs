@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Example</title>
+</head>
+<body>
+<h1>You are at the Examp page</h1>
+
+        <% for (examp of data) {%>
+    <div class="q-wrap">
+        <div>broto is: <%=examp.broto%></div>
+        <div><%= examp.net%></div>
+        <div><%= examp.questions[0].qBody%> </div>
+    </div>
+
+    <%}%>
+
+
+<a href="examp/add">Add new questioner</a>
+<a href="examp/addTo">Add question</a>
+    
+</body>
+</html>

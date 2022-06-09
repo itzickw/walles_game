@@ -12,8 +12,7 @@ app.set("view engien", "ejs");
 const mongoose = require("mongoose");
 // importing Product;
 
-const pupil = require("../models/pupils");
-
+const Pupil = require("../models/pupils");
 
 
 module.exports = Router;

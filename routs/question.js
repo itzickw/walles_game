@@ -14,6 +14,21 @@ const mongoose = require("mongoose");
 
 const Question = require("../models/questionnaire");
 
+Router.post("/addQ", async (req, res) => {
+  let qBody = "How are you feeling";
+  let qColor = "red";
+  let qskill = "emotionSkills";
 
+  let data = await Question.findByIdAndUpdate("629f2030a2831e381b8f99b7", {
+    emotionSkills: { testing: "hello" },
+  });
+
+  console.log(data);
+  res.send("done");
+});
+
+Router.get("/", (req, res) => {
+  res.send("I am in question");
+});
 
 module.exports = Router;

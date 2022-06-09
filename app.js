@@ -6,6 +6,7 @@ const { join } = require("path");
 const prod = require("./routs/products");
 const question = require("./routs/question");
 const pupil = require("./routs/pupils");
+const examp = require("./routs/exapms");
 
 app.set("views", join(__dirname, "views"));
 app.set("view engien", "ejs");
@@ -36,6 +37,7 @@ app.use(methodOverride("X-HTTP-Method-Override"));
 app.use("/product", prod);
 app.use("/Pupil", pupil);
 app.use("/question", question);
+app.use("/examp", examp);
 
 app.post("/car", (req, res) => {
   console.log("I am a POST CAR");
