@@ -13,7 +13,13 @@
     <div class="q-wrap">
         <div>broto is: <%=examp.broto%></div>
         <div><%= examp.net%></div>
-        <div><%= examp.questions[0].qBody%> </div>
+        <% for (question of examp.questions) {%>
+            <div class="single-q-wrap">
+            <%= question.qBody%>
+            <%= question.active%>
+        <%}%>
+    </div>
+        <!-- <div><%= examp.questions[0].qBody%> </div> -->
     </div>
 
     <%}%>
