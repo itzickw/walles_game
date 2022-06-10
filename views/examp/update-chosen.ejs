@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Change question</title>
+</head>
+<body>
+    
+    <h1>change the following question:</h1>
+      
+
+    <form action="question/<%=data.qId%>" method="post">
+        <div id="q-body"> 
+        <label for="qBody">change question body</label>
+        <input type="text" name="qBody" id="qBody" value="<%=data.qBody%>">
+    </div>
+    <label for="active">Is the question active: </label>
+    <label for="">active</label>
+    <%let mark = data.active? "checked": ""%>
+    <input type="radio" name="active" id="" value="true" <%= mark%>>
+    <label for="">Non-active</label>
+    <%let nonMark = data.active=="false"? "checked": ""%>
+    <input type="radio" name="active" id="" value="false" <%=nonMark%>>
+    
+<br>
+    <button>Submit</button>
+</form>
+</body>
+</html>

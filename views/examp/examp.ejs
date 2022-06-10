@@ -12,11 +12,15 @@
         <% for (examp of data) {%>
     <div class="q-wrap">
         <div>broto is: <%=examp.broto%></div>
-        <div><%= examp.net%></div>
+        <div> net is: <%= examp.net%></div>
         <% for (question of examp.questions) {%>
             <div class="single-q-wrap">
             <%= question.qBody%>
             <%= question.active%>
+            <div class="action">
+                <a href="/examp/update/<%= question.qId%>">Update</a>
+                <a href="">Delete</a>
+            </div>
         <%}%>
     </div>
         <!-- <div><%= examp.questions[0].qBody%> </div> -->
