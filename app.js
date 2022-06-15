@@ -7,6 +7,7 @@ const prod = require("./routs/products");
 const question = require("./routs/question");
 const pupil = require("./routs/pupils");
 const examp = require("./routs/exapms");
+const stud = require("./routs/studExamp");
 
 app.set("views", join(__dirname, "views"));
 app.set("view engien", "ejs");
@@ -38,6 +39,7 @@ app.use("/product", prod);
 app.use("/Pupil", pupil);
 app.use("/question", question);
 app.use("/examp", examp);
+app.use("/stud", stud);
 
 app.post("/car", (req, res) => {
   console.log("I am a POST CAR");
