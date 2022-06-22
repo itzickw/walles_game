@@ -27,32 +27,40 @@ async function main() {
 
 main();
 
-const newStud = new Student({
+const arrStud = new Student({
   name: "Moshe Cohen",
   info: {
     "T.Z": 12345,
     phone: 12345,
   },
-  questions: {
-    "behavioral-red": { 1: { pass: false }, 2: { pass: false } },
-    "behavioral-blue": { 3: { pass: false }, 4: { pass: false } },
-  },
+  "behavioral-red": [
+    { active: true },
+    { qid: 3311, score: false },
+    { qid: 3322, score: false },
+    { qid: 3333, score: false },
+  ],
+  "behavioral-blue": [
+    { active: false },
+    { qid: 4511, score: false },
+    { qid: 4522, score: false },
+    { qid: 4533, score: false },
+  ],
 });
 const newStud2 = new Student({
-  name: "Yaron Lavi",
+  name: "Eli Works",
   info: {
     "T.Z": 12345,
     phone: 12345,
   },
   questions: {
-    "behavioral-red": { 1: { pass: false }, 2: { pass: false } },
-    "behavioral-blue": { 3: { pass: false }, 4: { pass: false } },
+    behavioralRed: { 1: { pass: false, msg:"Whats app" }, 2: { pass: false } },
+    behavioralBlue: { 3: { pass: false }, 4: { pass: false } },
   },
 });
 
-// const makeQ = async () => {
-//   let resolt = await newStud2.save();
-//   console.log(resolt);
-// };
+const makeQ = async () => {
+  let resolt = await newStud2.save();
+  console.log(resolt);
+};
 
 makeQ();

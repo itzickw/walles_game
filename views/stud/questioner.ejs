@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%=data.name%></title>
+</head>
+<body>
+    <h1>This is <%=data.name %> questioner </h1>
+    <div>This is an example questioner please note that both colors are in the same skill</div>
+    <div>In the project it will not be like this.</div>
+    <div>Dont foucse on the skill for now, just the resoult</div>
+    <h2>Behavior red</h2>
+    <form action="/stud/behaveRed/<%= data._id%>" method="post">
+       <div>
+        <label for="">Does <%= data.name%>look in the eye</label>
+        <label for="11111"> yes </label>
+            <!-- The name will be a uuid, I am putting 1111 -->
+            <input type="radio" name="11111"  value="true" >
+        <label for="11111"> no </label>
+            <!-- The name will be a uuid, I am putting 1111 -->
+            <input type="radio" name="11111"  value="false" checked >
+    </div>
+       <div>
+        <label for="">Does <%= data.name%>say "Good morning"</label>
+        <label for="11111"> yes </label>
+            <!-- The name will be a uuid, I am putting 2111 which is differnt -->
+            <input type="radio" name="21111"  value="true" >
+        <label for="11111"> no </label>
+            <!-- The name will be a uuid, I am putting 2111 -->
+            <input type="radio" name="21111"  value="false" checked >
+    </div>
+       <div>
+        <label for="">Does <%= data.name%>say "use toilet paper"</label>
+        <label for="11111"> yes </label>
+            <!-- The name will be a uuid, I am putting 215511 which is differnt -->
+            <input type="radio" name="215511"  value="true" >
+        <label for="11111"> no </label>
+            <!-- The name will be a uuid, I am putting 215511 -->
+            <input type="radio" name="215511"  value="false" checked >
+    </div>
+    <button>click to submit</button>
+    </form>
+    <!-------------Look thta the actions are very similer----------------------------->
+    <h2>Behavior Blue</h2>
+    <form action="/stud/behaveBlue/<%= data._id%>" method="post">
+       <div>
+        <label for="">Does <%= data.name%>blow hid noes</label>
+        <label for="121212"> yes </label>
+            <!-- The name will be a uuid, I am putting 1111 -->
+            <input type="radio" name="121212"  value="true" >
+        <label for="121212"> no </label>
+            <!-- The name will be a uuid, I am putting 1111 -->
+            <input type="radio" name="121212"  value="false" checked >
+    </div>
+       <div>
+        <label for="">Does <%= data.name%> eat with fork</label>
+        <label for="33333"> yes </label>
+            <!-- The name will be a uuid, I am putting 2111 which is differnt -->
+            <input type="radio" name="33333"  value="true" >
+        <label for="33333"> no </label>
+            <!-- The name will be a uuid, I am putting 2111 -->
+            <input type="radio" name="33333"  value="false" checked >
+    </div>
+       <div>
+        <label for="">Does <%= data.name%>say "use toilet paper"</label>
+        <label for="444"> yes </label>
+            <!-- The name will be a uuid, I am putting 215511 which is differnt -->
+            <input type="radio" name="444444"  value="true" >
+        <label for="444"> no </label>
+            <!-- The name will be a uuid, I am putting 215511 -->
+            <input type="radio" name="444444"  value="false" checked >
+    </div>
+    <button>click to submit</button>
+    </form>
+</body>
+</html>
