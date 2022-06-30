@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Questionnarie update</title> 
+</head>
+<body>
+    <h1 style="text-align: center;">Questionnarie Update</h1>
+    <h3>Skill: <%= data.skill %></h3>
+        
+    
+    <% for (question of data.questions) { %>
+        <form action="update" method="post" style="text-align: center; background-color:<%= data.color%>;">
+            <div>
+                Qiuestion:
+                <input type="text" name="text" placeholder="<%= question.text %>">
+                 <br>
+                 
+                 Active:
+                 <input type="text" name="lastActive" value="<%= question.active %>">
+                 <% if (question.active) { %> 
+                    <label for="true">True </label>                
+                    <input type="radio" name="active" id="" value="true" checked="true">
+                    
+                    <label for="false">False </label>
+                    <input type="radio" name="active" id="" value="false">          
+                <% } %>
+                <% if (!question.active) { %> 
+                    <label for="true">True </label>                
+                    <input type="radio" name="active" id="" value="true">
+                    
+                    <label for="false">False </label>
+                    <input type="radio" name="active" id="" value="false" checked="true">          
+                <% } %>
+            </div>
+            <br>
+            <input type="text" name="skill" value="<%= data.skill %>" style="display:none">
+            <input type="text" name="color" value="<%= data.color %>" style="display:none">
+            <input type="text" name="id" value="<%= question.id %>" style="display: none;">
+            <input type="submit" value="update question">
+        </form>     
+        <br>       
+    <% } %>
+        
+    <form action="addQuestion" method="post" style="text-align: center; background-color: <%= data.color %>;">
+        <h3>Add new question</h3>
+        <input type="text" name="text">
+        <input type="text" name="skill" value="<%= data.skill %>" style="display:none">
+        <input type="text" name="color" value="<%= data.color %>" style="display:none">
+        <input type="submit" value="add question">
+    </form>
+
+    <a href="RequestAddNew">back to Questionnarie choice</a>
+</body>
+</html>

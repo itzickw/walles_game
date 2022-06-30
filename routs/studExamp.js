@@ -13,6 +13,7 @@ const mongoose = require("mongoose");
 
 const Student = require("../models/studExamp");
 const { json } = require("body-parser");
+const internal = require("stream");
 
 // 90% same code like the red one
 Router.post("/behaveBlue/:id", async (req, res) => {
@@ -31,6 +32,18 @@ Router.post("/behaveBlue/:id", async (req, res) => {
 Router.post("/behaveRed/:id", async (req, res) => {
   let id = req.params.id;
   const obj = req.body;
+  // obj = {11111:true, 21111:false}
+  // let passingArr = []
+// historaval =
+  //let objkeys = obj.keys();
+  // objKeys = ["11111",21111]
+  // objKeys.map((item)=>{
+    //if (obj[item].pass ===true) passingArr.push(item)
+  // if(historcal.indexof(item) ===-1 ) historcal.push(item)
+  //})
+
+
+
   let resolt = await Student.findOneAndUpdate(
     { _id: id },
     {
