@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -6,9 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>main menu</title>
 </head>
-<body style="text-align:center;">
-    <h1>Menu</h1>
-    <br> <a href="/question/RequestAddNew">Questionnaires</a>
-    <br> <a href="/stud/....">Students</a>
-</body>
-</html>
+<body style="text-align:center;">     -->
+
+    <%- include('./partiels/headerTeacher.ejs') %>
+    <h1>ברוכים הבאים לאוהליך  </h1>
+<form action="/auth" method="post">
+    <div class="user-reg">
+        <label for="email">איימיל של המורה</label>
+        <input type="text" name="email" id="email">
+    </div>
+    <div class="user-reg">
+        <label for="password">סיסמה </label>
+        <input type="text" name="password" id="password">
+    </div>
+    <button id="sub-btn">לחץ לאישור</button>
+</form>
+<%- include('partiels/footer.ejs') %> 

@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const Router = require("express").Router();
-const products = require("../data");
+
 // importing uuid for ids
 const { v4: uuidv4 } = require("uuid");
 // connetct ejs
@@ -65,35 +65,30 @@ Router.post("/addNew", async (req, res) => {
 
 Router.post("/update", async (req, res) => {
   const { color, skill, id, text, active, lastActive } = req.body;
-
   //try to catch th questionnaire by question id.
-  let exchangeData = await Question.findOne({ questions }).exec();
-  console.log(exchangeData);
+  //let exchangeData = await Question.findOne({_id: id}).exec();
+  //console.log(exchangeData);
 
   let data = await Question.findOne({ color: color, skill: skill }).exec();
-
-  //convert "active" to boolean
-  let newActive;
-
-  //update the neto if there was a chnage
-  if (active != lastActive) {
-    if (active == "true") {
-      data.neto = data.neto + 1;
-      newActive = true;
-    } else {
-      data.neto = data.neto - 1;
-      newActive = false;
-    }
-  }
 
   //changing the requested question
   for (ques of data.questions) {
     if (ques.id == id) {
+      //if there was a change in active
+      if (active != lastActive) {
+        if (active == "true") {
+          data.neto = data.neto + 1;
+          ques.active = true;
+        } else {
+          data.neto = data.neto - 1;
+          ques.active = false;
+        }
+      }
+      //if there was a change in the question text
       if (text != "") ques.text = text;
-      ques.active = newActive;
     }
   }
-
+  console.log(data.neto);
   //update mongo
   let updateQestion = await Question.findOneAndUpdate(
     { color: color, skill: skill },

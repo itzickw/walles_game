@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Name: <%= data.student.name %></h1>
+
+    <% let lifeSkills = [] %>
+    <% for (color of data.questionnaire) { %>
+        <% if (color.skill == "lifeSkills") { %>
+            <% lifeSkills.push(color) %>
+        <% } %>
+    <% } %>
+    
+    <% let emotionSkills = [] %>
+    <% for (color of data.questionnaire) { %>
+        <% if (color.skill == "emotionSkills") { %>
+            <% emotionSkills.push(color) %>
+        <% } %>
+    <% } %>
+    
+    <% let learningSkills = [] %>
+    <% for (color of data.questionnaire) { %>
+        <% if (color.skill == "learningSkills") { %>
+            <% learningSkills.push(color) %>
+        <% } %>
+    <% } %>
+    <% let QskillsArr = [lifeSkills, emotionSkills, learningSkills] %>
+    <% let SskillsArr = data.student.history %>
+    <div>
+        <% let skills = ["Life skills", "Emotion Skills", "Learning Skills"] %>
+        
+        <% for (let i = 0; i < SskillsArr.length; i++) { %>
+            <h3><%= skills[i] %></h3>
+            
+            <% for (let j = 0; j < SskillsArr[i].length; j++) { %>
+                <div style="background-color: <%= QskillsArr[i][j].color %>;">
+                    <% for(q of QskillsArr[i][j].questions) { %>
+                        <%= q.text %> Pass:
+                        <% if(SskillsArr[i][j].questions.includes(q.id)) { %>
+                            True
+                        <% } %>
+                        <% if(!SskillsArr[i][j].questions.includes(q.id)) { %>
+                            False
+                        <% } %>
+                        , 
+                    <% } %>
+                </div>
+            <% } %>
+        <% } %>        
+    </div>
+</body>
+</html>

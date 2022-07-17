@@ -1,14 +1,13 @@
 const mongoose = require("mongoose");
-const { stringify } = require("uuid");
 
 const studSchame = new mongoose.Schema({
   //Write you schema here
-name: String,
-teacher:String,
-info:Object,
-progress:Object,
-questions:Object
-
+  name: String,
+  info: Object,
+  // After problems with Objects, ,move to array
+  // questions:Object
+  skills:Array,
+  history:Array,
 });
 
 const student = mongoose.model("student", studSchame);

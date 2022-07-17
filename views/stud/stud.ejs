@@ -1,19 +1,41 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/main.css">
     <title>Students</title>
+    
 </head>
-<body>
-    <h1>I am in stud ejs</h1>
+<body> -->
+    <%- include('../partiels/headerTeacher.ejs') %>
+    <h1 style="text-align: center;"><%= data.teacher %></h1>
+ 
 
-    <%for(stud of data) {%>
-        <div>nane <%= stud.name%></div>
-     
-        <button><a href="/stud/goToQ/<%= stud._id%> "> <%= stud.name%>  Resoults </a></button> 
-
+            <%for(stud of data.students) {%>
+        <div class="container">
+                    <div class="stud-control">
+                    <h4><%= stud.name %></h4>
+                    <button><a href="/stud/goToQ/<%= stud._id%> "> <%= stud.name%>  Results </a></button>
+                    <button><a href="/stud/studentUpdate/<%= stud._id%>"> עדכון פרטי <%= stud.name%> </a></button>
+                </div>
+               
+                    <div class="traffic-light">
+                        <div style="height:20px; width:20px; border-radius:50%; margin-top: 30px;" class="light"></div>
+                        <div style="height:20px; width:20px; border-radius:50%;margin-top: 5px;" class="light"></div>
+                        <div style="height:20px; width:20px; ; border-radius:50%;margin-top: 5px;" class="light"></div>
+                    </div>              
+                    <!-- <div class="traffic-light">
+                        <div style="height:20px; width:20px; border-radius:50%; margin-top: 30px; background-color:<%= stud.skills[0].color %>;"></div>
+                        <div style="height:20px; width:20px; border-radius:50%;margin-top: 5px; background-color:<%= stud.skills[1].color %>;"></div>
+                        <div style="height:20px; width:20px; ; border-radius:50%;margin-top: 5px; background-color:<%= stud.skills[2].color %>"></div>
+                    </div>               -->
+                  
+        </div>
         <% } %> 
+    <div>
+        <br><br><br><br><br><a href="/stud/addStudent"><h2>Add a new student</h2></a>
+    </div>
 </body>
 </html>

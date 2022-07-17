@@ -1,0 +1,16 @@
+body{
+    background-color: lightblue;
+}
+
+div.container{
+    margin: 5px;
+    display: flex;
+  justify-content: center;
+    border: 1px #777 solid;
+    width: 50%;
+    
+}
+
+div.traffic-light{
+    margin-left: 50px;
+}

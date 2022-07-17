@@ -1,23 +1,37 @@
 const express = require("express");
 const app = express();
-const port = 8080;
+const port = 3000;
 const { join } = require("path");
 // inporting Routs
-const prod = require("./routs/products");
 const question = require("./routs/question");
-const pupil = require("./routs/pupils");
-const examp = require("./routs/exapms");
 const stud = require("./routs/studExamp");
+const auth = require("./routs/auth");
+const users = require("./routs/users");
+const admin = require("./routs/admin");
 
 app.set("views", join(__dirname, "views"));
 app.set("view engien", "ejs");
+app.use(express.static(join(__dirname, "public")));
 const methodOverride = require("method-override");
 const mongoose = require("mongoose");
 // conneting to mongoose
 
+// session
+const session = require("express-session");
+const sessionOptions = {
+  resave: false,
+  saveUninitialized: false,
+};
+app.use(
+  session({
+    secret: "notGoodSecret",
+    secret: "notGoodSecret",
+  })
+);
+
 async function main() {
   await mongoose
-    .connect("mongodb://localhost:27017/ohalachClass")
+    .connect("mongodb://localhost:27017/ohalachProject")
     .then(() => {
       console.log("conected to Mongo");
     })
@@ -35,25 +49,14 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // need to look again at method overide
 app.use(methodOverride("X-HTTP-Method-Override"));
 
-app.use("/product", prod);
-app.use("/Pupil", pupil);
 app.use("/question", question);
-app.use("/examp", examp);
+app.use("/auth", auth);
 app.use("/stud", stud);
-
-app.post("/car", (req, res) => {
-  console.log("I am a POST CAR");
-  res.send("<h1>I am in CAR</h1>");
-});
-
-app.get("/car", (req, res) => {
-  console.log("car works");
-  res.send("<h1>I am in CAR</h1>");
-});
+app.use("/users", users);
+app.use("/admin", admin);
 
 app.get("/", (req, res) => {
-  console.log(req);
-  res.send("Hello");
+  res.render("menu.ejs");
 });
 
 app.get("*", (req, res) => {

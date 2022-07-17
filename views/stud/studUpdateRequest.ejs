@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>student update</title>
+</head>
+<body style="text-align: center;">
+    <%= data.name %>
+    <h1><%= data[0].name %><br>ת.ז <%= data[0].info.id %></h1>
+
+    <form action="<%= data[0]._id %>" method="post">
+        <label for="phone">טלפון</label>
+        <input type="text" name="phone" id="phone" placeholder="<%= data[0].info.phone %>">
+        <br>
+        <label for="teacher"><%= data[0].info.teacher %> מורה עכשוי: </label>
+        <label for="new-teacher">בחר מורה חדש</label>
+        <div>
+        <select name="new-teacher" id="new-teacher">
+            <% for(let teach of teachers) { %>
+                <option value="<%= teach._id%>"><%= teach.name%></option>
+            <% } %>
+        </div>
+        </select>
+       <div>
+        <button class="btn btn-outline-secondary">עדכן</button>
+       </div>
+    </form>
+</body>
+</html>
