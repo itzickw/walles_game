@@ -17,18 +17,78 @@ const Question = require("../models/questionnaire");
 const auth = require("../middleware/auth");
 
 const { json } = require("body-parser");
-const student = require("../models/studExamp");
 const { findById } = require("../models/questionnaire");
-
 
 Router.get("/studentUpdate/:id", auth, async (req, res) => {
   if (!req.user.admin) res.render("helpers/noAcess.ejs");
   let id = req.params.id;
   let data = await Student.find({ _id: id });
-let teachers = await User.find();
-  res.render("stud/studUpdateRequest.ejs", { data,teachers });
+  let teachers = await User.find();
+  res.render("stud/studUpdateRequest.ejs", { data, teachers });
 });
 
+// this route is to add the student
+Router.get("/addStudent", (req, res) => {
+  let skills = ["lifeSkills", "emotionSkills", "learningSkills"];
+  res.render("stud/addStud.ejs", { skills });
+});
+
+// this rout is to actuelly add a student
+
+Router.post("/addStuds", async (req, res) => {
+  if (!req.user.admin) res.render("helpers/noAcess.ejs");
+  const { name, tz, phone, studTeacher } = req.body;
+  const teachArray = studTeacher.split("-");
+  console.log(`this is first ${teachArray[0]}`);
+  console.log(`this is second ${teachArray[1]}`);
+
+  const student = new Student({
+    name: name,
+    teacherId: teachArray[0],
+    info: {
+      tz: tz,
+      phone: phone,
+      teacher: teachArray[1],
+    },
+    skills: [
+      {
+        skill: "lifeSkills",
+        color: "red",
+        questions: [],
+      },
+      {
+        skill: "emotionSkills",
+        color: "red",
+        questions: [],
+      },
+      {
+        skill: "learningSkills",
+        color: "red",
+        questions: [],
+      },
+    ],
+    history: [[], [], []],
+  });
+  let result = await student.save();
+  console.log(result);
+
+  res.redirect("/stud");
+});
+
+// This rout is to get the form add students
+Router.get("/studentsAddForm", auth, async (req, res) => {
+  if (!req.user.admin) res.render("helpers/noAcess.ejs");
+  let teacher = await User.find();
+
+  res.render("stud/addStud.ejs", { teacher });
+});
+// This rout is  students index
+Router.get("/students", auth, async (req, res) => {
+  if (!req.user.admin) res.render("helpers/noAcess.ejs");
+  let students = await Student.find();
+  console.log(students);
+  res.render("admin/stud.ejs", { students });
+});
 
 // changing teacher info
 Router.post("/userUpdate/:id", auth, async (req, res) => {

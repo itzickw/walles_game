@@ -1,4 +1,4 @@
-<!-- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -8,12 +8,13 @@
     <title>Students</title>
     
 </head>
-<body> -->
-    <%- include('../partiels/headerTeacher.ejs') %>
-    <h1 style="text-align: center;"><%= data.teacher %></h1>
+<body>
+    <h1>in student</h1>
+    <!-- <%- include('./partiels/headerTeacher.ejs') %> -->
+    <!-- <h1 style="text-align: center;"><%= .teacher %></h1> -->
  
 
-            <%for(stud of data.students) {%>
+            <!-- <%for(stud of students) {%>
         <div class="container">
                     <div class="stud-control">
                     <h4><%= stud.name %></h4>
@@ -25,17 +26,17 @@
                         <div style="height:20px; width:20px; border-radius:50%; margin-top: 30px;" class="light"></div>
                         <div style="height:20px; width:20px; border-radius:50%;margin-top: 5px;" class="light"></div>
                         <div style="height:20px; width:20px; ; border-radius:50%;margin-top: 5px;" class="light"></div>
-                    </div>              
+                    </div>               -->
                     <!-- <div class="traffic-light">
                         <div style="height:20px; width:20px; border-radius:50%; margin-top: 30px; background-color:<%= stud.skills[0].color %>;"></div>
                         <div style="height:20px; width:20px; border-radius:50%;margin-top: 5px; background-color:<%= stud.skills[1].color %>;"></div>
                         <div style="height:20px; width:20px; ; border-radius:50%;margin-top: 5px; background-color:<%= stud.skills[2].color %>"></div>
                     </div>               -->
                   
-        </div>
+        <!-- </div>
         <% } %> 
     <div>
         <br><br><br><br><br><a href="/stud/addStudent"><h2>Add a new student</h2></a>
-    </div>
+    </div> -->
 </body>
 </html>
