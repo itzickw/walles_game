@@ -22,9 +22,19 @@ const { findById } = require("../models/questionnaire");
 Router.get("/studentUpdate/:id", auth, async (req, res) => {
   if (!req.user.admin) res.render("helpers/noAcess.ejs");
   let id = req.params.id;
-  let data = await Student.find({ _id: id });
+  let data = await Student.findOne({ _id: id });
   let teachers = await User.find();
+  console.log(data);
   res.render("stud/studUpdateRequest.ejs", { data, teachers });
+});
+
+// this rout is to get the form that makes changes to the student
+
+Router.get("/studView/:id", auth, async (req, res) => {
+  const id = req.params.id;
+  let data = await Student.findById(id);
+
+  res.send(data);
 });
 
 // this route is to add the student
@@ -35,7 +45,7 @@ Router.get("/addStudent", (req, res) => {
 
 // this rout is to actuelly add a student
 
-Router.post("/addStuds", async (req, res) => {
+Router.post("/addStuds", auth, async (req, res) => {
   if (!req.user.admin) res.render("helpers/noAcess.ejs");
   const { name, tz, phone, studTeacher } = req.body;
   const teachArray = studTeacher.split("-");
@@ -72,7 +82,7 @@ Router.post("/addStuds", async (req, res) => {
   let result = await student.save();
   console.log(result);
 
-  res.redirect("/stud");
+  res.redirect("/admin/students");
 });
 
 // This rout is to get the form add students

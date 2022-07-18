@@ -1,23 +1,36 @@
 <!DOCTYPE html>
-<html lang="en">
+<!-- <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
-<body>
-
+<body> -->
+    <%- include('../partiels/headerAdmin.ejs') %>
     <h1>רשימת סטודנטים</h1>
     <%for(stud of students){%>
+        <div class="container">
+            <div class="wrap d-flex">
         <div class="stud-div">
             <h4>שם: <%=stud.name%></h4>
             <h4>מורה: <%=stud.info.teacher%></h4>
         </div>
+            
+<div class="traffic-light">
+        <div class="traffic-light">
+                        <div style="height:20px; width:20px; border-radius:50%; margin-top: 30px; background-color:<%= stud.skills[0].color %>;"></div>
+                        <div style="height:20px; width:20px; border-radius:50%;margin-top: 5px; background-color:<%= stud.skills[1].color %>;"></div>
+                        <div style="height:20px; width:20px; ; border-radius:50%;margin-top: 5px; background-color:<%= stud.skills[2].color %>"></div>
+                    </div> 
+</div>
+</div>
+
         <div class="stud-control">
-            <button class="btn btn-info"> מעקב סטודנט</button>
-            <button class="btn btn-info"> פרטי סטודנט</button>
+            <button class="btn btn-info"> <a href="/admin/studView/<%= stud._id%>">מעקב סטודנט </a> </button>
+            
         </div>
+    </div>
     <%}%>
 
 <button><a href="/admin/studentsAddForm">הוסף סטודנט</a></button>
