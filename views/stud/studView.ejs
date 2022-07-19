@@ -14,7 +14,7 @@
         <% for(skill of data.skills) { %>
             <h2><%= skill.skill %></h2>
             <% let results = data.student.skills[i].questions %>            
-            
+            <form action="updateResult" method="post" style="background-color: <%= skill.color %>;">
             <!-- <form action="updateResult" method="post" style="background-color: <%= skill.color %>;"> -->
                 <% for (q of skill.questions) { %>
 
