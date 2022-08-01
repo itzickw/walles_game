@@ -11,7 +11,7 @@ const admin = require("./routs/admin");
 
 app.set("views", join(__dirname, "views"));
 app.set("view engien", "ejs");
-app.use(express.static(join(__dirname, "public")));
+app.use(express.static(__dirname + '/public'));
 const methodOverride = require("method-override");
 const mongoose = require("mongoose");
 // conneting to mongoose

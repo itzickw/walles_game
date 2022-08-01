@@ -10,52 +10,59 @@ app.set("views", join(__dirname, "views"));
 app.set("view engien", "ejs");
 
 const mongoose = require("mongoose");
-// importing Product;
-
 const Question = require("../models/questionnaire");
+const auth = require("../middleware/auth");
 
-Router.get("/", (req, res) => {
-  res.render("questionnaires/updateRequest.ejs");
-  //res.send("I am in question");
-});
 
-Router.get("/RequestAddNew", (req, res) => {
-  res.render("questionnaires/addNew.ejs");
-});
-
-Router.post("/addNew", async (req, res) => {
-  const { skill, color } = req.body;
-
-  let data = await Question.findOne({ color: color, skill: skill }).exec();
+Router.get("/RequestAddNew", auth, async  (req, res) => {
+  let data = await Question.find({});
+  let admin = req.user.admin;
+  let update = true;
   //console.log(data);
 
-  //if the questionnarie alredy exist
-  if (data != null) {
-    res.render("questionnaires/updateRequest.ejs", { data });
-    return;
-  }
-
-  //create a new questionnaire
-  let id = uuidv4();
-  data = new Question({
-    color: color,
-    skill: skill,
-    bruto: 0,
-    neto: 0,
-    questions: [],
-  });
-
-  //saving the new questionnaire to mongo
-  let result = await data.save();
-  res.render("questionnaires/updateRequest.ejs", { data });
+  res.render("questionnaires/questionnairesView.ejs", { data, admin, update });
 });
 
-Router.post("/update", async (req, res) => {
+Router.post("/addNew", auth, async (req, res) => {
+  const { skill, color } = req.body;
+  
+  if(skill != null  &&  color != null)
+  {
+    let admin = req.user.admin
+    
+    let data = await Question.findOne({ color: color, skill: skill }).exec();
+    
+    //if the questionnarie alredy exist
+    if (data != null) {
+      res.render("questionnaires/updateRequest.ejs", { data, admin });
+      return;
+    }
+    
+    //create a new questionnaire
+    let id = uuidv4();
+    data = new Question({
+      color: color,
+      skill: skill,
+      bruto: 0,
+      neto: 0,
+      questions: [],
+    });
+    
+    //saving the new questionnaire to mongo
+    let result = await data.save();
+    res.render("questionnaires/updateRequest.ejs", { data, admin });
+  }
+
+  else
+    res.redirect("/RequestAddNew");
+});
+
+Router.post("/update", auth, async (req, res) => {
   const { color, skill, id, text, active, lastActive } = req.body;
   //try to catch th questionnaire by question id.
   //let exchangeData = await Question.findOne({_id: id}).exec();
   //console.log(exchangeData);
-
+  let admin = req.user.admin;
   let data = await Question.findOne({ color: color, skill: skill }).exec();
 
   //changing the requested question
@@ -83,13 +90,14 @@ Router.post("/update", async (req, res) => {
     { new: true }
   );
 
-  res.render("questionnaires/updateRequest.ejs", { data });
+  res.render("questionnaires/updateRequest.ejs", { data, admin });
 });
 
-Router.post("/addQuestion", async (req, res) => {
+Router.post("/addQuestion", auth, async (req, res) => {
   const { color, skill, text } = req.body;
 
   let data = await Question.findOne({ color: color, skill: skill }).exec();
+  let admin = req.user.admin;
   //console.log(data);
 
   let newQuestion = { id: uuidv4(), text, active: true };
@@ -103,7 +111,7 @@ Router.post("/addQuestion", async (req, res) => {
     { questions: data.questions, bruto: data.bruto, neto: data.neto }
   );
 
-  res.render("questionnaires/updateRequest.ejs", { data });
+  res.render("questionnaires/updateRequest.ejs", { data, admin });
 });
 
 module.exports = Router;

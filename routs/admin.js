@@ -18,27 +18,29 @@ const auth = require("../middleware/auth");
 
 const { json } = require("body-parser");
 const { findById } = require("../models/questionnaire");
+const { truncate } = require("lodash");
+//const { NULL } = require("mysql/lib/protocol/constants/types");
 
 //options for student data changes - came from teacherClass.ejs
 Router.get("/studentUpdate/:id", auth, async (req, res) => {
   if (!req.user.admin) res.render("helpers/noAcess.ejs");
   let id = req.params.id;
+  let admin = req.user.admin;
   let student = await Student.findOne({ _id: id });
-  let teachers = await User.find();
-  //console.log(data);
+  let teachers = await User.find();  
   let lifeSkills = await Question.findOne({
     color: student.skills[0].color,
-    skill: "lifeSkills",
+    skill: "כישורי חיים",
   }).exec();
   
   let emotionSkills = await Question.findOne({
     color: student.skills[1].color,
-    skill: "emotionSkills",
+    skill: "כישורי רגש",
   }).exec();
   
   let learningSkills = await Question.findOne({
     color: student.skills[2].color,
-    skill: "learningSkills",
+    skill: "כישורי למידה",
   }).exec();
 
   let data = {
@@ -47,10 +49,56 @@ Router.get("/studentUpdate/:id", auth, async (req, res) => {
     admin:true
   };
 
-  res.render("stud/studUpdateRequest.ejs", { data, teachers });
+  res.render("stud/studUpdateRequest.ejs", { data, teachers, admin });
 });
 
-Router.post("/studentUpdate/updateResult", auth, async (req, res) => {
+Router.post("/studentUpdate/:id", auth, async (req, res) => {
+  if (!req.user.admin) res.render("helpers/noAcess.ejs");
+  
+  let id = req.params.id;
+  const{newTeacher} = req.body;
+  
+  if(newTeacher !=  null)
+  {
+
+    let teacher = await User.findOne({_id: newTeacher});
+    
+    let student = await Student.findOneAndUpdate(
+      { _id: id }, {teacherId: newTeacher, 'info.teacher': teacher.name}, {new:true}
+      );
+  }
+
+  res.redirect("/admin/studentUpdate/" + id);
+});
+
+Router.post("/studentUpdate/:id/historyView", auth, async (req, res) => {
+  if (!req.user.admin) res.render("helpers/noAcess.ejs");
+  let admin= req.user.body;
+  let id = req.params.id;
+  console.log(id);
+  let student = await Student.findOne({ _id: id }).exec();
+  let questionnaire = await Question.find();
+  console.log(student.history[1]);
+  let data = {
+    student,
+    questionnaire,
+    admin: true,
+  };
+  
+  res.render("stud/historyView.ejs", { data, admin });
+});
+
+Router.post("/studentUpdate/:id/turnOffNextStageRequest", auth, async (req, res) => {
+  if (!req.user.admin) res.render("helpers/noAcess.ejs");
+  console.log("hey baby");
+  let id = req.params.id;
+  console.log(id);
+  let student = await Student.findOneAndUpdate({_id: id},{nextStageRequest: false});
+
+  res.redirect("/admin/studentUpdate/" + id);
+})
+
+Router.post("/studentUpdate/:id/updateResult", auth, async (req, res) => {
   if (!req.user.admin) res.render("helpers/noAcess.ejs");
   
   const obj = req.body;
@@ -82,40 +130,19 @@ Router.post("/studentUpdate/updateResult", auth, async (req, res) => {
     { new: true }
   );
 
-  let lifeSkills = await Question.findOne({
-    color: student.skills[0].color,
-    skill: "lifeSkills",
-  }).exec();
-
-  let emotionSkills = await Question.findOne({
-    color: student.skills[1].color,
-    skill: "emotionSkills",
-  }).exec();
-
-  let learningSkills = await Question.findOne({
-    color: student.skills[2].color,
-    skill: "learningSkills",
-  }).exec();
-
-  let data = {
-    student,
-    skills: [lifeSkills, emotionSkills, learningSkills],
-    admin:true
-  };
-
-  let teachers = await User.find();
-
-  res.render("stud/studUpdateRequest.ejs", { data, teachers });
+  res.redirect("/admin/studentUpdate/" + obj.sId);
 });
 
-Router.post("/studentUpdate/nextStage", async (req, res) => {
+Router.post("/studentUpdate/:id/nextStage", auth, async (req, res) => {
+  if (!req.user.admin) res.render("helpers/noAcess.ejs");
+
   const { skill, color, sId, passQuestions } = req.body;
 
   let colors = ["red", "orange", "yellow", "aqua", "lime"];
   let index = colors.indexOf(color);
   let student = await Student.findOne({ _id: sId }).exec();
   let passQ = passQuestions.split(",");
-  
+  console.log(passQ);
   //pushing this into the fitting skill..
   let colorHistory = { color, questions: passQ };
   
@@ -128,89 +155,57 @@ Router.post("/studentUpdate/nextStage", async (req, res) => {
     { _id: sId },
     { skills: student.skills, history: student.history }
   );
-
-  let lifeSkills = await Question.findOne({
-    color: student.skills[0].color,
-    skill: "lifeSkills",
-  }).exec();
-
-  let emotionSkills = await Question.findOne({
-    color: student.skills[1].color,
-    skill: "emotionSkills",
-  }).exec();
-
-  let learningSkills = await Question.findOne({
-    color: student.skills[2].color,
-    skill: "learningSkills",
-  }).exec();
-
-  let data = {
-    student,
-    skills: [lifeSkills, emotionSkills, learningSkills],
-    admin:true
-  };
   
-  let teachers = await User.find();
-  
-  res.render("stud/studView.ejs", { data, teachers});
-});
-
-
-
-// this rout is to get the form that makes changes to the student
-Router.get("/studView/:id", auth, async (req, res) => {
-  const id = req.params.id;
-  let data = await Student.findById(id);
-
-  res.send(data);
-});
-
-// this route is to add the student
-Router.get("/addStudent", (req, res) => {
-  let skills = ["lifeSkills", "emotionSkills", "learningSkills"];
-  res.render("stud/addStud.ejs", { skills });
+  res.redirect("/admin/studentUpdate/" + sId);
 });
 
 // this rout is to actuelly add a student
-
 Router.post("/addStuds", auth, async (req, res) => {
-  if (!req.user.admin) res.render("helpers/noAcess.ejs");
+  if (!req.user.admin) 
+    res.render("helpers/noAcess.ejs");
+
   const { name, tz, phone, studTeacher } = req.body;
-  const teachArray = studTeacher.split("-");
-  console.log(`this is first ${teachArray[0]}`);
-  console.log(`this is second ${teachArray[1]}`);
 
-  const student = new Student({
-    name: name,
-    teacherId: teachArray[0],
-    info: {
-      tz: tz,
-      phone: phone,
-      teacher: teachArray[1],
-    },
-    skills: [
-      {
-        skill: "lifeSkills",
-        color: "red",
-        questions: [],
+  if(studTeacher != null)
+  {        
+    const teachArray = studTeacher.split("-");
+    
+    const student = new Student({
+      name: name,
+      teacherId: teachArray[0],
+      nextStageRequest: false,
+      info: {
+        tz: tz,
+        phone: phone,
+        teacher: teachArray[1],
       },
-      {
-        skill: "emotionSkills",
-        color: "red",
-        questions: [],
-      },
-      {
-        skill: "learningSkills",
-        color: "red",
-        questions: [],
-      },
-    ],
-    history: [[], [], []],
-  });
-  let result = await student.save();
-  console.log(result);
-
-  res.redirect("/admin/students");
+      skills: [
+        {
+          skill: "lifeSkills",
+          color: "red",
+          questions: [],
+        },
+        {
+          skill: "emotionSkills",
+          color: "red",
+          questions: [],
+        },
+        {
+          skill: "learningSkills",
+          color: "red",
+          questions: [],
+        },
+      ],
+      history: [[], [], []],
+    });
+    
+    let result = await student.save();
+    
+    res.redirect("/admin/students");
+  } 
+  
+  else
+    res.redirect("/admin/studentsAddForm");
 });
 
 // This rout is to get the form add students
@@ -236,6 +231,14 @@ Router.post("/userUpdate/:id", auth, async (req, res) => {
   const { name, email, password } = req.body;
   let techer = await User.findById(id);
   let newName = name === "" ? techer.name : name;
+
+  //update all his students
+  if(newName  !=  "")
+  {
+    let studentsUpdate =  Student.updateMany({teacherId: id}, {'info.teacher': newName});
+    console.log((await studentsUpdate).modifiedCount);
+  }
+
   newEmail = email === "" ? techer.email : email;
   let newPassword;
   if (!password) {
@@ -277,8 +280,6 @@ Router.get("/techerClass/:id", auth, async (req, res) => {
 
   let teacher = await User.findById(tId);
   let students = await Student.find({ teacherId: tId });
-
-  console.log(students);
 
   res.render("admin/teacherClass.ejs", { students, teacher });
 });

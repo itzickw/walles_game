@@ -1,57 +1,52 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Questionnarie update</title> 
-</head>
-<body>
-    <h1 style="text-align: center;">Questionnarie Update</h1>
-    <h3>Skill: <%= data.skill %></h3>
+<% if (admin) { %>
+    <%- include('../partiels/headerAdmin.ejs') %>
+<% } %>
+<% if (!admin) { %>
+    <%- include('../partiels/headerTeacher.ejs') %>
+<% } %>
+    <h1 class="title">עידכון שאלון</h1>
+    <h2 class="skill-name"><%= data.skill %></h2>
         
-    
-    <% for (question of data.questions) { %>
-        <form action="update" method="post" style="text-align: center; background-color:<%= data.color%>;">
-            <div>
-                Qiuestion:
-                <input type="text" name="text" placeholder="<%= question.text %>">
-                 <br>
-                 
-                 Active:
-                 <input type="text" name="lastActive" value="<%= question.active %>">
-                 <% if (question.active) { %> 
-                    <label for="true">True </label>                
-                    <input type="radio" name="active" id="" value="true" checked="true">
-                    
-                    <label for="false">False </label>
-                    <input type="radio" name="active" id="" value="false">          
-                <% } %>
-                <% if (!question.active) { %> 
-                    <label for="true">True </label>                
-                    <input type="radio" name="active" id="" value="true">
-                    
-                    <label for="false">False </label>
-                    <input type="radio" name="active" id="" value="false" checked="true">          
-                <% } %>
-            </div>
-            <br>
-            <input type="text" name="skill" value="<%= data.skill %>" style="display:none">
-            <input type="text" name="color" value="<%= data.color %>" style="display:none">
-            <input type="text" name="id" value="<%= question.id %>" style="display: none;">
-            <input type="submit" value="update question">
-        </form>     
-        <br>       
-    <% } %>
-        
-    <form action="addQuestion" method="post" style="text-align: center; background-color: <%= data.color %>;">
-        <h3>Add new question</h3>
+    <div class="container">
+        <% for (question of data.questions) { %>
+            <form action="update" method="post" style="text-align: center; background-color:<%= data.color%>;">
+                <div>
+                    שאלה:
+                    <input id="question" type="text" name="text" placeholder="<%= question.text %>">
+                     <br>                                  
+                     <input type="text" name="lastActive" value="<%= question.active %>" style="display:none;">
+                     <% if (question.active) { %> 
+                        <label for="true">פעילה</label>                
+                        <input type="radio" name="active" id="" value="true" checked="true">
+
+                        <label for="false">לא פעילה</label>
+                        <input type="radio" name="active" id="" value="false">          
+                    <% } %>
+                    <% if (!question.active) { %> 
+                        <label for="true">פעילה</label>                
+                        <input type="radio" name="active" id="" value="true">
+
+                        <label for="false">לא פעילה</label>
+                        <input type="radio" name="active" id="" value="false" checked="true">          
+                    <% } %>
+                </div>
+                <br>
+                <input type="text" name="skill" value="<%= data.skill %>" style="display:none">
+                <input type="text" name="color" value="<%= data.color %>" style="display:none">
+                <input type="text" name="id" value="<%= question.id %>" style="display: none;">
+                <input type="submit" value="עידכון">
+            </form>     
+            <br>       
+        <% } %>
+    </div>
+    <form action="addQuestion" method="post" style=" background-color: <%= data.color %>; margin: 20px;">
+        <h3>הוספת שאלה חדשה</h3>
         <input type="text" name="text">
         <input type="text" name="skill" value="<%= data.skill %>" style="display:none">
         <input type="text" name="color" value="<%= data.color %>" style="display:none">
-        <input type="submit" value="add question">
+        <input type="submit" value="הוספה">
     </form>
 
-    <a href="RequestAddNew">back to Questionnarie choice</a>
+    <h5><a href="RequestAddNew">חזרה לבחירת שאלון</a></h5>
 </body>
 </html>

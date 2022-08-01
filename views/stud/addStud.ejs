@@ -1,36 +1,30 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body> -->
     <%- include('../partiels/headerAdmin.ejs')%>
-    <h1 style="text-align: center;">Add Student</h1>
-    <form action="/admin/addStuds" method="post" class="container">
-        <div class="stud-input">
-        <label for="name">הוסף שם התלמיד</label>
-        <input type="text" name="name" id="name" placeholder="שם"><br>
-    </div>
-    <div class="stud-input">
-        <label for="tz"> הוסף תעוזת זהות</label>
-        <input type="text" name="tz" id="tz" placeholder="תעודת זהות"><br>
-    </div>
-    <div class="stud-input" >
-        <label for="phone"> הוסף מספר טלפון</label>
-        <input type="text" name="phone" id="phone" placeholder="מספר טלפון"><br>
-    </div>
-    <div class="stud-input">
-        <label for="stud-teacher">בחר מורה לתלמיד</label>
-        <select name="studTeacher" id="stud-teacher">
-        <%for (teach of teacher) {%>
-            <option value="<%=teach.id%>-<%=teach.name%>"><%=teach.name%></option>
-        <%}%>
-        </select>
-    </div>
-    <button class="btn btn-outline-success  margin-top-5rem">שלח</button> 
+
+    <h1 class="title">הוספת תלמיד</h1>
+    
+    <form action="/admin/addStuds" method="post" class="container" style="grid-gap: 20px; text-align: center;">
+        <div class="stud-input">            
+            <input type="text" name="name" id="name" placeholder="הוסף שם התלמיד"><br>
+        </div>
+
+        <div class="stud-input">            
+            <input type="text" name="tz" id="tz" placeholder="הוסף תעוזת זהות"><br>
+        </div>
+
+        <div class="stud-input" >            
+            <input type="text" name="phone" id="phone" placeholder="הוסף מספר טלפון"><br>
+        </div>
+
+        <div class="stud-input">            
+            <select name="studTeacher" id="stud-teacher">
+                <option value="" disabled selected>בחר מורה</option>
+                <%for (teach of teacher) {%>
+                    <option value="<%=teach.id%>-<%=teach.name%>"><%=teach.name%></option>
+                <%}%>
+            </select>
+        </div>
+
+        <button class="btn btn-outline-success  margin-top-5rem">הוסף</button> 
     </form>
 </body>
 </html>

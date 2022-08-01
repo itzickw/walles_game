@@ -12,6 +12,7 @@ const sessionOptions = {
   resave: false,
   saveUninitialized: false,
 };
+
 app.use(
   session({
     secret: "notGoodSecret",
@@ -39,5 +40,13 @@ router.post("/", async (req, res) => {
     ? res.redirect("http://localhost:3000/admin")
     : res.redirect("http://localhost:3000/stud");
 });
+router.get("/logOut", (req, res) => {
+  var hour = -3600000;
+  /*
+  */
+   req.session.cookie.expires = new Date(Date.now() + hour);
+   req.session.cookie.maxAge = hour;
+   res.redirect("http://localhost:3000")
+  });
 
 module.exports = router;

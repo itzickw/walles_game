@@ -1,38 +1,42 @@
-<!DOCTYPE html>
-<!-- <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body> -->
-    <%- include('../partiels/headerAdmin.ejs') %>
-    <h1>רשימת סטודנטים</h1>
-    <%for(stud of students){%>
-        <div class="container">
-            <div class="wrap d-flex">
-        <div class="stud-div">
-            <h4>שם: <%=stud.name%></h4>
-            <h4>מורה: <%=stud.info.teacher%></h4>
-        </div>
-            
-<div class="traffic-light">
-        <div class="traffic-light">
-                        <div style="height:20px; width:20px; border-radius:50%; margin-top: 30px; background-color:<%= stud.skills[0].color %>;"></div>
-                        <div style="height:20px; width:20px; border-radius:50%;margin-top: 5px; background-color:<%= stud.skills[1].color %>;"></div>
-                        <div style="height:20px; width:20px; ; border-radius:50%;margin-top: 5px; background-color:<%= stud.skills[2].color %>"></div>
-                    </div> 
-</div>
-</div>
 
-        <div class="stud-control">
-            <button class="btn btn-info"> <a href="/admin/studView/<%= stud._id%>">מעקב סטודנט </a> </button>
-            
+    <%- include('../partiels/headerAdmin.ejs') %>
+    <h1 class="title">תלמידים</h1>
+
+    <div style="direction:rtl;display: flex;">
+        <h4>מקרא: </h4>
+        <div class="stages-display">
+            <div class="red">1</div>
+            <div class="orange">2</div>
+            <div class="yellow">3</div>
+            <div class="aqua">4</div>
+            <div class="lime">5</div>
         </div>
     </div>
-    <%}%>
 
-<button><a href="/admin/studentsAddForm">הוסף סטודנט</a></button>
+    <div class="grid-container">
+        
+        <%for(stud of students){%>    
+
+            <div class="student-wrap">
+                                                
+                <div class="student-name">
+                    <h3><%=stud.name%></h3>
+                    <h5>מורה: <%=stud.info.teacher%></h5>
+                    <% if (stud.nextStageRequest) { %>
+                        <h6 class="next-satge-request">בקשה להעברת שלב!</h6>
+                    <% } %>
+                    <button class="btn btn-outline-secondary"> <a href="/admin/studentUpdate/<%= stud._id%>">מעקב סטודנט</a> </button>  
+                </div>                
+                    
+                <div class="student-traffic-light">
+                    <div style="height:20px; width:20px; border-radius:50%; background-color:<%= stud.skills[0].color %>;"></div>
+                    <div style="height:20px; width:20px; border-radius:50%;margin-top: 5px; background-color:<%= stud.skills[1].color %>;"></div>
+                    <div style="height:20px; width:20px; ; border-radius:50%;margin-top: 5px; background-color:<%= stud.skills[2].color %>"></div>
+                </div> 
+
+            </div>
+
+        <%}%>
+    </div>
 </body>
 </html>

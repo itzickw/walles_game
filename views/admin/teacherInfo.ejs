@@ -1,10 +1,7 @@
 
  <%- include('../partiels/headerAdmin.ejs') %>
- <h1>מורי אוהלייך</h1>
- <h1 style="text-align: center;"><%= teacher.name %></h1>
+ <h1 class="title">עדכון פרטי מורה</h1>
  
-
- <h1>הרשמה</h1>
  <form action="/admin/userUpdate/<%= teacher._id%>" method="post">
      <div class="user-reg">
          <label for="name">שם : <%= teacher.name%></label>
@@ -18,7 +15,7 @@
          <label for="password">סיסמה </label>
          <input type="password" name="password" id="password"  placeholder="***********">
      </div>
-     <button id="sub-btn">לחץ לאישור</button>
+     <button id="sub-btn" class="btn btn-outline-success">עידכון</button>
  </form>
 
 </body>
