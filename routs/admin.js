@@ -19,17 +19,145 @@ const auth = require("../middleware/auth");
 const { json } = require("body-parser");
 const { findById } = require("../models/questionnaire");
 
+//options for student data changes - came from teacherClass.ejs
 Router.get("/studentUpdate/:id", auth, async (req, res) => {
   if (!req.user.admin) res.render("helpers/noAcess.ejs");
   let id = req.params.id;
-  let data = await Student.findOne({ _id: id });
+  let student = await Student.findOne({ _id: id });
   let teachers = await User.find();
-  console.log(data);
+  //console.log(data);
+  let lifeSkills = await Question.findOne({
+    color: student.skills[0].color,
+    skill: "lifeSkills",
+  }).exec();
+  
+  let emotionSkills = await Question.findOne({
+    color: student.skills[1].color,
+    skill: "emotionSkills",
+  }).exec();
+  
+  let learningSkills = await Question.findOne({
+    color: student.skills[2].color,
+    skill: "learningSkills",
+  }).exec();
+
+  let data = {
+    student,
+    skills: [lifeSkills, emotionSkills, learningSkills],
+    admin:true
+  };
+
   res.render("stud/studUpdateRequest.ejs", { data, teachers });
 });
 
-// this rout is to get the form that makes changes to the student
+Router.post("/studentUpdate/updateResult", auth, async (req, res) => {
+  if (!req.user.admin) res.render("helpers/noAcess.ejs");
+  
+  const obj = req.body;
+  console.log(obj);
 
+  let student = await Student.findOne({ _id: obj.sId }).exec();
+
+  //update results
+  for (qId of obj.qId) {
+    //if the student passed this question
+    if (obj[qId] == "true") {
+      //if the question dosn't exist in his results, insert it
+      if (!student.skills[obj.skill].questions.includes(qId))
+        student.skills[obj.skill].questions.push(qId);
+    } 
+    //if the student has not passed this question
+    else {
+      //if the question exist in his results, remove it
+      if (student.skills[obj.skill].questions.includes(qId)) {
+        let index = student.skills[obj.skill].questions.indexOf(qId);
+        if (index > -1) student.skills[obj.skill].questions.splice(index, 1);
+      }
+    }
+  }
+
+  let result = await Student.findOneAndUpdate(
+    { _id: obj.sId },
+    { skills: student.skills },
+    { new: true }
+  );
+
+  let lifeSkills = await Question.findOne({
+    color: student.skills[0].color,
+    skill: "lifeSkills",
+  }).exec();
+
+  let emotionSkills = await Question.findOne({
+    color: student.skills[1].color,
+    skill: "emotionSkills",
+  }).exec();
+
+  let learningSkills = await Question.findOne({
+    color: student.skills[2].color,
+    skill: "learningSkills",
+  }).exec();
+
+  let data = {
+    student,
+    skills: [lifeSkills, emotionSkills, learningSkills],
+    admin:true
+  };
+
+  let teachers = await User.find();
+
+  res.render("stud/studUpdateRequest.ejs", { data, teachers });
+});
+
+Router.post("/studentUpdate/nextStage", async (req, res) => {
+  const { skill, color, sId, passQuestions } = req.body;
+
+  let colors = ["red", "orange", "yellow", "aqua", "lime"];
+  let index = colors.indexOf(color);
+  let student = await Student.findOne({ _id: sId }).exec();
+  let passQ = passQuestions.split(",");
+  
+  //pushing this into the fitting skill..
+  let colorHistory = { color, questions: passQ };
+  
+  //student history is an array of the skills, skill is a number
+  student.history[skill].push(colorHistory);
+  student.skills[skill].color = colors[index + 1];
+  student.skills[skill].questions = [];
+
+  let update = await Student.findOneAndUpdate(
+    { _id: sId },
+    { skills: student.skills, history: student.history }
+  );
+
+  let lifeSkills = await Question.findOne({
+    color: student.skills[0].color,
+    skill: "lifeSkills",
+  }).exec();
+
+  let emotionSkills = await Question.findOne({
+    color: student.skills[1].color,
+    skill: "emotionSkills",
+  }).exec();
+
+  let learningSkills = await Question.findOne({
+    color: student.skills[2].color,
+    skill: "learningSkills",
+  }).exec();
+
+  let data = {
+    student,
+    skills: [lifeSkills, emotionSkills, learningSkills],
+    admin:true
+  };
+  
+  let teachers = await User.find();
+  
+  res.render("stud/studView.ejs", { data, teachers});
+});
+
+
+
+// this rout is to get the form that makes changes to the student
 Router.get("/studView/:id", auth, async (req, res) => {
   const id = req.params.id;
   let data = await Student.findById(id);
@@ -92,11 +220,11 @@ Router.get("/studentsAddForm", auth, async (req, res) => {
 
   res.render("stud/addStud.ejs", { teacher });
 });
+
 // This rout is  students index
 Router.get("/students", auth, async (req, res) => {
   if (!req.user.admin) res.render("helpers/noAcess.ejs");
   let students = await Student.find();
-  console.log(students);
   res.render("admin/stud.ejs", { students });
 });
 
@@ -141,13 +269,16 @@ Router.get("/techerinfo/:id", auth, async (req, res) => {
   res.render("admin/teacherInfo.ejs", { teacher });
 });
 
-// Gets all of teh students of the class
+// Gets all of the students of the class - came frome teachers.ejs
 Router.get("/techerClass/:id", auth, async (req, res) => {
   // if someone came in with wrong token
   if (!req.user.admin) res.render("helpers/noAcess.ejs");
   let tId = req.params.id;
+
   let teacher = await User.findById(tId);
-  let students = await Student.find({ "info.teacher": tId });
+  let students = await Student.find({ teacherId: tId });
+
+  console.log(students);
 
   res.render("admin/teacherClass.ejs", { students, teacher });
 });
@@ -156,9 +287,13 @@ Router.get("/techerClass/:id", auth, async (req, res) => {
 Router.get("/", auth, async (req, res) => {
   if (!req.user.admin) res.render("helpers/noAcess.ejs");
   let teachers = await User.find({});
-  console.log(teachers);
 
   res.render("admin/teachers.ejs", { teachers });
+});
+
+
+Router.post("/addStuds", auth, async (req, res) => {
+  if (!req.user.admin) res.render("helpers/noAcess.ejs");
 });
 
 module.exports = Router;

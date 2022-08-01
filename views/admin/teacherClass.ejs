@@ -5,10 +5,10 @@
     
     <% for(stud of students) {%>
         <div >
-            <h3><%=stud.name%></h3>
+            <h3><%= stud.name %></h3>
             
         </div>
-        <button class="btn btn-info"><a href="/admin/studentUpdate/<%=stud._id%>">שנה מורה </a> </button>
+        <button class="btn btn-info"><a href="/admin/studentUpdate/<%= stud._id %>">שנה מורה </a> </button>
     <% }%>
 
 </body>

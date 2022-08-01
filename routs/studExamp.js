@@ -18,70 +18,32 @@ const auth = require("../middleware/auth");
 const { json } = require("body-parser");
 const student = require("../models/studExamp");
 
-// 90% same code like the red one
-Router.post("/behaveBlue/:id", async (req, res) => {
-  let id = req.params.id;
-  const obj = req.body;
-  let resolt = await Student.findOneAndUpdate(
-    { _id: id },
-    {
-      "questions.behavioralBlue": obj,
-    }
-  );
-  console.log(resolt);
-  res.redirect("/stud");
-});
-
-// This is the route for teh red... I will copy paste and adhust to make one for the blue
-Router.post("/behaveRed/:id", async (req, res) => {
-  let id = req.params.id;
-  const obj = req.body;
-  let resolt = await Student.findOneAndUpdate(
-    { _id: id },
-    {
-      "questions.behavioralRed": obj,
-    }
-  );
-  console.log(resolt);
-  res.redirect("/stud");
-});
-
-/*
-Router.get("/goToq/:id", async (req, res) => {
-  let id = req.params.id;
-  let data = await Student.find({ _id: id });
-  
-  console.log(data);
-  res.render("stud/questioner.ejs", { data: data[0] });
-});
-*/
-
 Router.get("/goToq/:id", async (req, res) => {
   let id = req.params.id;
   let student = await Student.findOne({ _id: id }).exec();
-  //console.log(student);
+  
   let lifeSkills = await Question.findOne({
     color: student.skills[0].color,
     skill: "lifeSkills",
   }).exec();
-  //console.log(lifeSkills);
+  
   let emotionSkills = await Question.findOne({
     color: student.skills[1].color,
     skill: "emotionSkills",
   }).exec();
-  //console.log(emotionSkills);
+  
   let learningSkills = await Question.findOne({
     color: student.skills[2].color,
     skill: "learningSkills",
   }).exec();
-  //console.log(learningSkills);
+  
 
   let data = {
     student,
     skills: [lifeSkills, emotionSkills, learningSkills],
   };
   //student.skills[0].questions.push(lifeSkills.questions[0].id);
-  console.log(data.student);
+  
 
   res.render("stud/studView.ejs", { data });
 });
@@ -108,25 +70,6 @@ Router.post("/goToQ/updateResult", async (req, res) => {
     }
   }
 
-  /*
-  let exist = false;
-  if( student.skills[skill].questions.includes(Qid))
-  exist = true;
-  if(pass == "true"){
-    if(!exist)
-    student.skills[skill].questions.push(Qid);
-  }
-  else{
-    if(exist)
-    {
-      let index = student.skills[skill].questions.indexOf(Qid);
-      if(index > -1)
-      student.skills[skill].questions.splice(index, 1);
-    }      
-    console.log(student.skills[skill].questions);
-  }
-  */
-
   let result = await Student.findOneAndUpdate(
     { _id: Sid },
     { skills: student.skills },
@@ -137,10 +80,12 @@ Router.post("/goToQ/updateResult", async (req, res) => {
     color: student.skills[0].color,
     skill: "lifeSkills",
   }).exec();
+
   let emotionSkills = await Question.findOne({
     color: student.skills[1].color,
     skill: "emotionSkills",
   }).exec();
+
   let learningSkills = await Question.findOne({
     color: student.skills[2].color,
     skill: "learningSkills",
@@ -156,12 +101,16 @@ Router.post("/goToQ/updateResult", async (req, res) => {
 
 Router.post("/goToQ/nextStage", async (req, res) => {
   const { skill, color, Sid, passQuestions } = req.body;
+
   let colors = ["red", "orange", "yellow", "aqua", "lime"];
   let index = colors.indexOf(color);
   let student = await Student.findOne({ _id: Sid }).exec();
   let passQ = passQuestions.split(",");
+  
+  //pushing this into the fit skill..
   let colorHistory = { color, questions: passQ };
-  //console.log(passQ);
+  
+  //student history is an array of the skills, skill is a number
   student.history[skill].push(colorHistory);
   student.skills[skill].color = colors[index + 1];
   student.skills[skill].questions = [];
@@ -175,10 +124,12 @@ Router.post("/goToQ/nextStage", async (req, res) => {
     color: student.skills[0].color,
     skill: "lifeSkills",
   }).exec();
+
   let emotionSkills = await Question.findOne({
     color: student.skills[1].color,
     skill: "emotionSkills",
   }).exec();
+
   let learningSkills = await Question.findOne({
     color: student.skills[2].color,
     skill: "learningSkills",
@@ -202,7 +153,7 @@ Router.post("/goToQ/historyView", async (req, res) => {
     student,
     questionnaire,
   };
-  console.log(data);
+  
   res.render("stud/historyView.ejs", { data });
 });
 
@@ -213,9 +164,8 @@ Router.get("/addQ", auth, async (req, res) => {
   res.send(req.user);
 });
 
-Router.get("/addStudent", (req, res) => {
-  let skills = ["lifeSkills", "emotionSkills", "learningSkills"];
-  res.render("stud/addStud.ejs", { skills });
+Router.get("/addStudent", (req, res) => {  
+  res.render("stud/addStud.ejs");
 });
 
 Router.post("/addStuds", async (req, res) => {
@@ -223,10 +173,11 @@ Router.post("/addStuds", async (req, res) => {
 
   const student = new Student({
     name: name,
+    teacherId: teacher,
+    nextStageRequest: false,
     info: {
       id: id,
-      phone: phone,
-      teacher: teacher,
+      phone: phone,      
     },
     skills: [
       {
@@ -252,18 +203,6 @@ Router.post("/addStuds", async (req, res) => {
   res.redirect("/stud");
 });
 
-Router.get("/yaron", async (req, res) => {
-  let data = await Student.find({ _id: "62a8012942bef14959fed82e" });
-  console.log(data);
-  data.questions = null;
-  let obj = { test: "Testing this" };
-  let myIndex = data.questions;
-  myIndex = { msg: "Hello to all" };
-  let resoult = Student.findOneAndUpdate({ _id: "62a8012942bef14959fed82e" });
-  res.send(data);
-  // res.render("stud/stud.ejs", { data });
-});
-
 Router.post("/teacherStudentsView", async (req, res) => {
   const { teacher } = req.body;
   let students = await Student.find({ "info.teacher": teacher });
@@ -278,7 +217,7 @@ Router.post("/teacherStudentsView", async (req, res) => {
 Router.get("/studentUpdate/:id", async (req, res) => {
   let id = req.params.id;
   let data = await Student.find({ _id: id });
-  console.log(data);
+  
   res.render("stud/studUpdateRequest.ejs", { data });
 });
 

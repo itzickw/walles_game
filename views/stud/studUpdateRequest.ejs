@@ -7,14 +7,17 @@
     <title>student update</title>
 </head>
 <body style="text-align: center;">
+    <% if(data.admin) { %>
+        <%- include('../partiels/headerAdmin.ejs') %>
+    <% } %>
     <%= data.name %>
-    <h1><%= data.name %><br>ת.ז <%= data.info.id %></h1>
+    <h1><%= data.student.name %><br>ת.ז <%= data.student.info.id %></h1>
 
     <form action="<%= data._id %>" method="post">
         <label for="phone">טלפון</label>
-        <input type="text" name="phone" id="phone" placeholder="<%= data.info.phone %>">
+        <input type="text" name="phone" id="phone" placeholder="<%= data.student.info.phone %>">
         <br>
-        <label for="teacher"><%= data.info.teacher %> מורה עכשוי: </label>
+        <label for="teacher"><%= data.student.info.teacher %> מורה עכשוי: </label>
         <label for="new-teacher">בחר מורה חדש</label>
         <div>
         <select name="new-teacher" id="new-teacher">
@@ -34,13 +37,13 @@
     <div>
         <% for(skill of data.skills) { %>
             <h2><%= skill.skill %></h2>
-            <% let results = data.skills[i].questions %>            
+            <% let results = data.student.skills[i].questions %>            
             
-            <!-- <form action="updateResult" method="post" style="background-color: <%= skill.color %>;"> -->
+            <form action="updateResult" method="post" style="background-color: <%= skill.color %>;">
                 <% for (q of skill.questions) { %>
 
                     <% if (q.active) { %>
-                        <input type="text" name="Qid" id="" value="<%= q.id %>" style="display:none;">
+                        <input type="text" name="qId" id="" value="<%= q.id %>" style="display:none;">
                         
                         <div>
                             <span style="font-size: 20px; color: blue;"><%= q.text %>:   </span>
@@ -65,18 +68,18 @@
 
                 <% } %>
                 <input type="number" name="skill" id="" value="<%= i %>" style="display: none;">
-                <input type="text" name="sId" id="" value="<%= data._id %>" style="display: none;">
+                <input type="text" name="sId" id="" value="<%= data.student._id %>" style="display: none;">
                 <input type="submit" value="עדכן">
             </form>
                 <% let grade = (results.length/skill.neto) * 100 %>
                 <div>Grade: <%= grade %></div>
 
-            <% if(grade >= 80 && skill.color != "lime") { %>
+            <% if(data.admin  &&  grade >= 80  &&  skill.color != "lime") { %>
                 <form action="nextStage" method="post">
                     <input type="submit" value="Next stage pass">
                     <input type="number" name="skill"  value="<%= i %>" style="display: none;">                    
                     <input type="text" name="color"  value="<%= skill.color %>" style="display: none;">
-                    <input type="text" name="sId"  value="<%= data._id %>" style="display: none;">
+                    <input type="text" name="sId"  value="<%= data.student._id %>" style="display: none;">
                     <input type="text" name="passQuestions"  value="<%= data.skills[i].questions %>" style="display: none;">
                 </form>
             <% } %>
