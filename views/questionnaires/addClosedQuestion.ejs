@@ -1,0 +1,18 @@
+<%- include('../partiels/headerAdmin.ejs') %>
+<h1 class="title">הוספת שאלה סגורה</h1>
+
+<form action="<%= id %>/update" method="post" style="margin: 20px;">
+    <input type="text" name="text" placeholder="הוסף שאלה" style="margin-bottom: 30px;">
+    <br>
+    <input type="text" name="answer" placeholder="הוסף תשובה" style="margin-bottom: 10px;direction: rtl;">
+    <% for(let i = 0; i < numOfChoices - 1; i++) { %>
+        <div>
+            <input type="text" name="<%= i %>" placeholder="הוסף אפשרות">
+        </div>
+    <% } %>
+    <input type="hidden" name="numOfChoices" value="<%= numOfChoices %>">
+    <button class="btn" id="sub-btn">הוספה</button>
+</form>
+
+</body>
+</html>

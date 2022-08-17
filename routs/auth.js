@@ -21,7 +21,8 @@ app.use(
 );
 
 router.post("/", async (req, res) => {
-  let user = await User.findOne({ email: req.body.email.toLowerCase() });
+  
+  let user = await User.findOne({ name: req.body.name });
   if (!user) return res.status(400).send("Invalid email or password.");
 
   const validPassword = await bcrypt.compare(req.body.password, user.password);
@@ -40,13 +41,13 @@ router.post("/", async (req, res) => {
     ? res.redirect("http://localhost:3000/admin")
     : res.redirect("http://localhost:3000/stud");
 });
+
 router.get("/logOut", (req, res) => {
   var hour = -3600000;
-  /*
-  */
+
    req.session.cookie.expires = new Date(Date.now() + hour);
    req.session.cookie.maxAge = hour;
-   res.redirect("http://localhost:3000")
+   res.redirect("http://localhost:3000");
   });
 
 module.exports = router;

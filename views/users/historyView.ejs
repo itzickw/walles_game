@@ -1,0 +1,42 @@
+<% if(data.admin) { %>
+    <%- include('../partiels/headerAdmin.ejs') %>
+<% } %>
+
+<% if(!data.admin) { %>
+    <%- include('../partiels/headerTeacher.ejs') %>
+<% } %>
+    <h1 class="title">הסטוריה</h1>
+    <h3 class="title">שלום ל:<br> <%= data.user.name %></h3>
+
+   
+    
+    <div>
+        
+        
+        <% for (let i = 0; i < SskillsArr.length; i++) { %>
+        <div class="skill">
+            <h3 class="skill-name"><%= skills[i] %></h3>
+            
+            <% for (let j = 0; j < SskillsArr[i].length; j++) { %>
+                <div style="background-color: <%= QskillsArr[i][j].color %>; margin:10px;">
+                    <% for(q of QskillsArr[i][j].questions) { %>
+                        <div style="display: inline-block;">
+                            <br>
+                            <h5 style="display: inline;"><%= q.text %>: </h5>
+                            <% if(SskillsArr[i][j].questions.includes(q.id)) { %>
+                                עבר
+                            <% } %>
+                            <% if(!SskillsArr[i][j].questions.includes(q.id)) { %>
+                                לא עבר
+                            <% } %>
+                            
+                            &nbsp;&nbsp;&nbsp;
+                        </div>                                                  
+                    <% } %>
+                </div>
+            <% } %>
+        </div>
+        <% } %>        
+    </div>
+</body>
+</html>

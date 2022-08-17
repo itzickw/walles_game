@@ -2,6 +2,8 @@ const express = require("express");
 const app = express();
 const bcrypt = require("bcrypt");
 const _ = require("lodash");
+
+const sources = require("../sources");
 const User = require("../models/users");
 const auth = require("../middleware/auth");
 const { reduce } = require("lodash");
@@ -20,15 +22,32 @@ router.get("/me", auth, async (req, res) => {
 router.post("/register", async (req, res) => {
   // check if the email already exist in the DB
 
-  let user = await User.findOne({ email: req.body.email });
+  let user = await User.findOne({ name: req.body.name });
   if (user) return res.status(400).send("User already registered.");
 
-  user = new User(_.pick(req.body, ["name", "email", "password"]));
+  user = new User({
+    name: req.body.name,
+    password: req.body.password,
+    skills: [],
+    history:[],
+  });
+
+  for(skill of sources.categories)
+  {
+      user.skills.push({
+        name: skill,
+        color: sources.colors[0],
+        questions:[],
+      });
+
+      user.history.push([]);
+  };
+
   const salt = await bcrypt.genSalt(10);
   user.password = await bcrypt.hash(user.password, salt);
-  user.email = user.email.toLowerCase();
+  
+  
   user.admin = false;
-  console.log(user);
   await user.save();
   res.redirect("/admin");
 });

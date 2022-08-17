@@ -29,11 +29,20 @@ a:link
     font-weight: bold;    
 }
 
+div.skill
+{
+    display: inline-flex;
+    align-items: center;
+    text-align: center;
+    width: auto;
+}
+
 .skill-name
 {
     text-align: center;
     color: brown;
     grid-gap: 5px;    
+    margin: 30px;
 }
 
 div.teacher-in-list{
@@ -52,10 +61,12 @@ div.inner-wrap
 
 div.student-wrap
 {
-    display: flex;
+    display: inline-flex;
+    text-align: center;
+    align-items: center;
     margin-left: auto;
     margin-right: auto;
-    width: 16em;
+    width: 22em;
     grid-gap: 5px;
     background-color: aliceblue;
     border-radius: 15px;
@@ -63,19 +74,13 @@ div.student-wrap
 
 div.student-name
 {
-    margin: 10px;
+    
+    margin: auto;
 }
 
 div.student-traffic-light
 {
-    margin: auto;
-}
-
-.next-satge-request
-{    
-    display: inline;
-    background-color: coral;     
-    margin: 20px;
+    margin: 10px;
 }
 
 div.studentsView{
@@ -102,13 +107,16 @@ div.stud-input
 
 div.questionnaire
 {
+    width: 80em;
     grid-gap: 20px;
 }
 
 div.question
 {
-    border: 1px solid black;
-    margin: 5px;    
+    display: inline-flex;
+    width: auto;
+    margin: 10px;    
+    border: 1px solid;
 }
 
 div.item
@@ -140,26 +148,14 @@ div.direction
 
 }
 
-div.red{
-    height:20px; width:20px; border-radius:50%;margin: 5px; background-color:red;
-}
-div.orange{
-    height:20px; width:20px; border-radius:50%;margin: 5px; background-color:orange;
-}
-div.yellow{
-    height:20px; width:20px; ; border-radius:50%;margin: 5px; background-color:yellow;
-}
-div.aqua{
-    height:20px; width:20px; ; border-radius:50%;margin: 5px; background-color:aqua;
-}
-div.lime{
-    height:20px; width:20px; ; border-radius:50%;margin: 5px; background-color:lime;
+div.satge-color{
+    height:20px; width:20px; border-radius:50%;margin: 5px;
 }
 
 div.questionnaires-view
 {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    grid-template-columns: auto auto auto auto;
 }
 
 .nav-item-space
@@ -199,11 +195,12 @@ button#sub-btn
     position:relative;
     border-radius: 20px;
     right: 15px;
-    width:100px;
+    width:auto;
     height:  40px;
     cursor:pointer;
     border:none;
-    outline:none;
+    outline:none;    
+    margin: 5px;
   }
 
 input#question
@@ -214,4 +211,13 @@ input#question
     padding: 10px;
     margin-top:  5px;
 
+}
+
+div.student-update
+{
+    display: inline-block;
+
+    margin: 10px;
+    background-color:aquamarine;
+    border-radius: 20%;
 }

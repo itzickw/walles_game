@@ -1,0 +1,117 @@
+
+    <% if(admin) { %>
+        <%- include('../partiels/headerAdmin.ejs') %>
+    <% } %>
+
+    <% if(!admin) { %>
+        <%- include('../partiels/headerTeacher.ejs') %>
+    <% } %>
+
+    <h1 class="title">שם משתמש:<br><%= data.user.name %></h1>
+    
+    <% if (admin) { %>
+
+        <form action="<%= data.user._id %>" method="post">            
+            <div class="student-update">
+                <div class="user-reg">
+                    <label for="name">שם:</label>
+                    <input type="text" name="name" placeholder="<%= data.user.name %>">
+                </div> 
+                <button class="btn btn-dark" id="sub-btn">עידכון</button>
+            </div>
+        </form>
+
+    <% } %>
+
+    <div style="margin: 10px;">
+        <form action="<%= data.user._id %>/historyView" method="post">            
+            <button type="submit" class="btn btn-dark">הסטוריה</button>
+        </form>        
+    </div>
+
+    <!--Start, trying to add stud info-->
+    <br>
+    <div style="direction:rtl;display: flex;">
+        <h4>מקרא: </h4>
+        <div class="stages-display">
+            <% for(let i = 0; i < colors.length - 1; i++) { %>
+                <div class="satge-color" style="background-color: <%= colors[i] %>;"><%= i+1 %></div>
+            <% } %>
+        </div>
+    </div>
+    
+    
+    <div class="grid-container">
+        
+        <% let i = 0 %>        
+        <% for(skill of data.skills) { %>
+            <div class="skill">
+
+                <% if (skill) { %>
+
+                    <h2 class="skill-name"><%= skill.skill %></h2>
+
+                    <% let grade = 0 %>
+
+                    <div class="questionnaire" style="background-color: <%= skill.color %>;">
+                        <% for (q of skill.questions) { %>
+                            <% let pass = false %>
+                            <% let userAnswer = "הכנס תשובה" %>
+                            <% if (data.user.skills.find(item => item.name == skill.skill).questions.find(item => item.id == q.id)) { %>
+                                <% userAnswer = data.user.skills.find(item => item.name == skill.skill).questions.find(item => item.id == q.id).answer %> 
+                                <% pass = data.user.skills.find(item => item.name == skill.skill).questions.find(item => item.id == q.id).pass %>                      
+                            <% } %>
+
+                            <% if (q.active) { %>
+                                <form action="<%= data.user._id %>/updateEnswer" method="post">
+                                    <input type="text" name="qId" id="" value="<%= q.id %>" style="display:none;"> 
+                                    <input type="text" name="questionnaireId" value="<%= skill._id %>" style="display: none;">
+                                    <div class="question">
+                                        <h5 style="font-size: 20px;font-weight:bolder;"><%= q.text %>:</h5>
+                                        <div  style="display: inline-flex;">
+                                            <input type="text" name="answer" placeholder="<%= userAnswer %>"/> 
+                                            <% if (pass) { %>
+                                                כל הכבוד!
+                                                <%  grade = grade + 1 %>
+                                            <% } %>
+                                            <% if (!pass  &&  userAnswer != "הכנס תשובה") { %>
+                                                <h6>לא נכון</h6>
+                                            <% } %>
+                                            <% if (userAnswer == "הכנס תשובה") { %>
+                                                <h6>הכנס תשובה</h6>
+                                            <% } %>
+                                            <button type="submit" class="btn btn-success">אישור</button>                         
+                                        </div>
+                                    </div>
+                                </form>
+                            <% } %>
+
+                        <% } %>
+                    </div>                
+                    <% grade = (grade / skill.neto) * 100 %>
+                    ציון: <%= grade %>
+                    <% if(data.admin  ||  grade >= 80) { %>
+                        <form action="<%= data.user._id %>/nextStage" method="post">
+                            <button type="submit" class="btn btn-success link"><h6>מעבר שלב</h6></button>
+                            <input type="number" name="skill"  value="<%= i %>" style="display: none;">                    
+                            <input type="text" name="color"  value="<%= skill.color %>" style="display: none;">
+                            <input type="text" name="sId"  value="<%= data.user._id %>" style="display: none;">
+                            <input type="text" name="passQuestions"  value="<%= data.user.skills[i].questions %>" style="display: none;">
+                        </form>
+                    <% } %>
+
+                    <% i = i+1 %>
+
+                <% } %>        
+                
+                <% if(!skill) { %>
+                    <h1>כל הכבוד!<br>סיימת את המבחן!</h1>
+                <% } %> 
+            </div>
+        <% } %>
+    </div>
+
+
+    <!--end, trying to add stud info-->
+</body>
+</html>

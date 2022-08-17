@@ -31,7 +31,7 @@ app.use(
 
 async function main() {
   await mongoose
-    .connect("mongodb://localhost:27017/ohalachProject")
+    .connect("mongodb://localhost:27017/wallesGame")
     .then(() => {
       console.log("conected to Mongo");
     })

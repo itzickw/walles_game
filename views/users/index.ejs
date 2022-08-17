@@ -1,0 +1,16 @@
+        <%- include('../partiels/headerTeacher.ejs') %>
+
+        <h1 class="title">שלום ל:<br> <%= user.name %></h1>
+       
+        <div>
+            <% for(skill of skills) { %>
+                <a href="/stud/test/<%= skill %>/<%= user._id%>"> <button id="sub-btn" class="btn"><%= skill %></button> </a>  
+            <% } %> 
+            <div>
+                <a href="http://localhost:3000/stud/<%= user._id %>/historyView"><button type="submit" class="btn btn-dark">הסטוריה</button></a>
+            </div>         
+        </div>
+        
+            
+    </body>
+</html>

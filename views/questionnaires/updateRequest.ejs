@@ -9,42 +9,62 @@
         
     <div class="container">
         <% for (question of data.questions) { %>
-            <form action="update" method="post" style="text-align: center; background-color:<%= data.color%>;">
-                <div>
-                    שאלה:
-                    <input id="question" type="text" name="text" placeholder="<%= question.text %>">
-                     <br>                                  
-                     <input type="text" name="lastActive" value="<%= question.active %>" style="display:none;">
-                     <% if (question.active) { %> 
-                        <label for="true">פעילה</label>                
-                        <input type="radio" name="active" id="" value="true" checked="true">
+            
+                <form action="<%= data._id %>/update" method="post" style="text-align: center; background-color:<%= data.color%>;">
+                    <div style="display:inline-flex;">
 
-                        <label for="false">לא פעילה</label>
-                        <input type="radio" name="active" id="" value="false">          
-                    <% } %>
-                    <% if (!question.active) { %> 
-                        <label for="true">פעילה</label>                
-                        <input type="radio" name="active" id="" value="true">
+                        <div style="display:inline-flex;">
+                            <div>
+                                שאלה:
+                                <input id="question" type="text" name="text" placeholder="<%= question.text %>">                            
+                            </div>
+                            <div>
+                                תשובה:
+                                <input id="question" type="text" name="answer" placeholder="<%= question.answer %>">
+                            </div>
+                            <div>
+                                <% if(question.closed) { %>
+                                    אפשרויות:
+                                    <% for(let i = 0; i < question.options.length; i++) { %> 
+                                        <input id="question" type="text" name="option <%= i %>" placeholder="<%= question.options[i] %>">
+                                    <% } %>
+                                <% } %> 
+                            </div>
 
-                        <label for="false">לא פעילה</label>
-                        <input type="radio" name="active" id="" value="false" checked="true">          
-                    <% } %>
-                </div>
-                <br>
-                <input type="text" name="skill" value="<%= data.skill %>" style="display:none">
-                <input type="text" name="color" value="<%= data.color %>" style="display:none">
-                <input type="text" name="id" value="<%= question.id %>" style="display: none;">
-                <input type="submit" value="עידכון">
-            </form>     
+                        </div>
+
+                         <input type="hidden" name="lastActive" value="<%= question.active %>">
+                         <% if (question.active) { %> 
+                            <label for="true">פעילה</label>                
+                            <input type="radio" name="active" id="" value="true" checked="true">
+
+                            <label for="false">לא פעילה</label>
+                            <input type="radio" name="active" id="" value="false">          
+                        <% } %>
+                        <% if (!question.active) { %> 
+                            <label for="true">פעילה</label>                
+                            <input type="radio" name="active" id="" value="true">
+
+                            <label for="false">לא פעילה</label>
+                            <input type="radio" name="active" id="" value="false" checked="true">          
+                        <% } %>
+                    </div>
+
+                    <input type="hidden" name="id" value="<%= question.id %>">
+                    <button class="btn" id="sub-btn">עידכון</button>                                    
+                </form>
             <br>       
         <% } %>
     </div>
-    <form action="addQuestion" method="post" style=" background-color: <%= data.color %>; margin: 20px;">
-        <h3>הוספת שאלה חדשה</h3>
-        <input type="text" name="text">
-        <input type="text" name="skill" value="<%= data.skill %>" style="display:none">
-        <input type="text" name="color" value="<%= data.color %>" style="display:none">
-        <input type="submit" value="הוספה">
+
+    <h3 class="title">הוספת שאלה חדשה</h3>
+    <div style="margin-bottom:30px;">
+        <a href="http://localhost:3000/question/addOpenQuestion/<%= data._id %>"><button class="btn" id="sub-btn">שאלה פתוחה</button></a>
+    </div>
+    <form action="addClosedQuestion/<%= data._id %>" method="post" style="display:inline-block; width:17em;border:solid 1px;">
+        <label for="numOfChoices">הכנס את מספר האפשרויות לבחירה</label>
+        <input type="text" name="numOfChoices" id="numOfChoices">
+        <button class="btn" id="sub-btn">שאלה סגורה</button>
     </form>
 
     <h5><a href="RequestAddNew">חזרה לבחירת שאלון</a></h5>

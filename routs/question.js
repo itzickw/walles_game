@@ -12,7 +12,8 @@ app.set("view engien", "ejs");
 const mongoose = require("mongoose");
 const Question = require("../models/questionnaire");
 const auth = require("../middleware/auth");
-
+const sources = require("../sources");
+const { Route } = require("routes");
 
 Router.get("/RequestAddNew", auth, async  (req, res) => {
   let data = await Question.find({});
@@ -20,50 +21,22 @@ Router.get("/RequestAddNew", auth, async  (req, res) => {
   let update = true;
   //console.log(data);
 
-  res.render("questionnaires/questionnairesView.ejs", { data, admin, update });
+  res.render("questionnaires/questionnairesView.ejs", { data, sources, admin, update });
 });
 
-Router.post("/addNew", auth, async (req, res) => {
-  const { skill, color } = req.body;
+Router.get("/addNew/:id", auth, async (req, res) => {
+  const id = req.params.id;
+  let admin = req.user.admin
+  let data = await Question.findOne({ _id: id });
+    
+  res.render("questionnaires/updateRequest.ejs", { data, admin });
+});
+
+Router.post("/addNew/:id/update", auth, async (req, res) => {
+  let qId = req.params.id;
+  const { id, text, answer, active, lastActive } = req.body;
   
-  if(skill != null  &&  color != null)
-  {
-    let admin = req.user.admin
-    
-    let data = await Question.findOne({ color: color, skill: skill }).exec();
-    
-    //if the questionnarie alredy exist
-    if (data != null) {
-      res.render("questionnaires/updateRequest.ejs", { data, admin });
-      return;
-    }
-    
-    //create a new questionnaire
-    let id = uuidv4();
-    data = new Question({
-      color: color,
-      skill: skill,
-      bruto: 0,
-      neto: 0,
-      questions: [],
-    });
-    
-    //saving the new questionnaire to mongo
-    let result = await data.save();
-    res.render("questionnaires/updateRequest.ejs", { data, admin });
-  }
-
-  else
-    res.redirect("/RequestAddNew");
-});
-
-Router.post("/update", auth, async (req, res) => {
-  const { color, skill, id, text, active, lastActive } = req.body;
-  //try to catch th questionnaire by question id.
-  //let exchangeData = await Question.findOne({_id: id}).exec();
-  //console.log(exchangeData);
-  let admin = req.user.admin;
-  let data = await Question.findOne({ color: color, skill: skill }).exec();
+  let data = await Question.findOne({ _id: qId }).exec();
 
   //changing the requested question
   for (ques of data.questions) {
@@ -80,38 +53,120 @@ Router.post("/update", auth, async (req, res) => {
       }
       //if there was a change in the question text
       if (text != "") ques.text = text;
+      if (answer != "") ques.answer = answer;
+
+      if(ques.closed)
+        for(let i = 0; i < ques.options.length; i++)    
+          if(req.body["option " + i] != "")
+          {
+            console.log(req.body["option " + i]);
+            ques.options[i] = req.body["option " + i];                  
+          }
     }
   }
-  console.log(data.neto);
+  console.log(req.body);
   //update mongo
   let updateQestion = await Question.findOneAndUpdate(
-    { color: color, skill: skill },
+    { _id: qId },
     { questions: data.questions, neto: data.neto },
     { new: true }
   );
 
-  res.render("questionnaires/updateRequest.ejs", { data, admin });
+  res.redirect("/question/addNew/" + qId);
 });
 
 Router.post("/addQuestion", auth, async (req, res) => {
-  const { color, skill, text } = req.body;
+  const { color, skill, text, answer } = req.body;
 
-  let data = await Question.findOne({ color: color, skill: skill }).exec();
+  let data = await Question.findOne({ color: color, skill: skill });
   let admin = req.user.admin;
-  //console.log(data);
-
-  let newQuestion = { id: uuidv4(), text, active: true };
-  data.questions.push(newQuestion);
-  data.bruto += 1;
-  data.neto += 1;
-
-  //update mongo
-  let update = await Question.findOneAndUpdate(
-    { color: color, skill: skill },
-    { questions: data.questions, bruto: data.bruto, neto: data.neto }
-  );
-
+  
+  if(data.questions.find(x => x.text == text) == undefined)
+  {
+    let newQuestion = { id: uuidv4(), text, answer, active: true };
+    data.questions.push(newQuestion);
+    data.bruto += 1;
+    data.neto += 1;
+    
+    //update mongo
+    let update = await Question.findOneAndUpdate(
+      { color: color, skill: skill },
+      { questions: data.questions, bruto: data.bruto, neto: data.neto }
+    );
+  }
+      
   res.render("questionnaires/updateRequest.ejs", { data, admin });
 });
 
+Router.get("/addOpenQuestion/:id", auth, (req, res) => {
+  let id = req.params.id;
+  
+  res.render("questionnaires/addOpenQuestion.ejs", {id});
+})
+
+Router.post("/addOpenQuestion/:id", auth, async (req, res) => {
+  let id = req.params.id;
+  const { text, answer } = req.body;
+
+  let data = await Question.findOne({ _id: id });
+  
+  if(data.questions.find(x => x.text == text) == undefined)
+  {
+    let newQuestion = { id: uuidv4(), text, answer, active: true };
+    data.questions.push(newQuestion);
+    data.bruto += 1;
+    data.neto += 1;
+    
+    //update mongo
+    let update = await Question.findOneAndUpdate(
+      { _id: id },
+      { questions: data.questions, bruto: data.bruto, neto: data.neto }
+    );
+  }
+
+  res.redirect("question/addNew/" + id);
+})
+
+Router.post("/addNew/addClosedQuestion/:id", auth, (req, res) => {
+  let id = req.params.id;
+  const {numOfChoices} = req.body;
+  //console.log(req.params);
+  res.render("questionnaires/addClosedQuestion.ejs", { id, numOfChoices });
+})
+
+Router.post("/addNew/addClosedQuestion/:id/update", auth, async (req, res) => {
+  let id = req.params.id;
+  const obj = req.body;
+  const admin = req.user.admin;
+
+  let data = await Question.findOne({ _id: id });
+  if(data.questions.find(x => x.text == obj.text) == undefined)
+  {
+    let newClosedQ = {
+      id: uuidv4(),
+      text: obj.text, 
+      answer: obj.answer,
+      closed: true,
+      options: [],  
+      active: true,
+    }
+  
+    for(let i = 0; i < obj.numOfChoices - 1; i++)
+    {
+      newClosedQ.options.push(obj[i])
+    }
+    
+    data.bruto += 1;
+    data.neto += 1;
+    data.questions.push(newClosedQ);
+
+    //update mongo
+    let update = await Question.findOneAndUpdate(
+      { _id: id },
+      { questions: data.questions, bruto: data.bruto, neto: data.neto }
+    );
+    console.log(newClosedQ);
+  }
+  res.redirect("/question/addNew/" + id)
+})
 module.exports = Router;

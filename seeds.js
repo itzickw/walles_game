@@ -4,7 +4,6 @@ const Router = require("express").Router();
 const bcrypt = require("bcrypt");
 const _ = require("lodash");
 const { reduce } = require("lodash");
-
 // importing uuid for ids
 const { v4: uuidv4 } = require("uuid");
 // connetct ejs
@@ -13,14 +12,14 @@ app.set("views", join(__dirname, "views"));
 app.set("view engien", "ejs");
 
 const mongoose = require("mongoose");
-// importing Product;
 
+// categories and colors arrays
+const sources = require("./sources");
 const Question = require("./models/questionnaire");
 const User = require("./models/users");
-const Student = require("./models/studExamp");
 async function main() {
   await mongoose
-    .connect("mongodb://localhost:27017/ohalachProject")
+    .connect("mongodb://localhost:27017/wallesGame")
     .then(() => {
       console.log("conected to Mongo");
     })
@@ -32,6 +31,41 @@ async function main() {
 main();
 
 const makeQ = async () => {
+  let skills = sources.categories;
+  let colors = sources.colors;
+  
+  //insert to mongo the questionnaires
+  let i = 0;
+  for (skill of skills) {
+    for (color of colors) {
+      const questionnaire = new Question({
+        color: color,
+        skill: skill,
+        bruto: 0,
+        neto: 0,
+        questions: [],
+      });
+
+      let result = await questionnaire.save();
+    }
+  }
+
+  const salt = await bcrypt.genSalt(10);
+
+  const admin = new User({
+    name: "מנהל",
+    password: "1234",
+    admin: true,
+    categories:[],
+    history:[],
+  })
+    
+  admin.password = await bcrypt.hash(admin.password, salt);
+  await admin.save();
+};
+
+/*
+const makeQ2 = async () => {
   let skills = ["כישורי חיים", "כישורי רגש", "כישורי למידה"];
   let colors = ["red", "orange", "yellow", "aqua", "lime"];
   let i = 0;
@@ -44,7 +78,7 @@ const makeQ = async () => {
         neto: 0,
         questions: [],
       });
-
+      
       for(let j = 0; j < 7; j++)
       {
         let newQuestion = { id: uuidv4(), text: "question " + i.toString(), active: true };
@@ -53,12 +87,12 @@ const makeQ = async () => {
         questionnaire.neto += 1;
         i++;
       }
-
+      
       let result = await questionnaire.save();
       console.log(result);
     }
   }
-
+  
   const salt = await bcrypt.genSalt(10);
   for(let i = 0; i < 10; i++)
   {
@@ -72,7 +106,7 @@ const makeQ = async () => {
     teacher.password = await bcrypt.hash(teacher.password, salt);
     await teacher.save();
   }
-
+  
   for(let i = 0; i < 50; i++)
   { 
     teacher = await User.findOne({name: "teacher " + (i % 10).toString()});
@@ -107,5 +141,7 @@ const makeQ = async () => {
     await student.save();
   }
 };
+*/
 
 makeQ();
+//makeQ2();

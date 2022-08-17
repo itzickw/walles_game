@@ -1,17 +1,14 @@
 <%- include('partiels/headerAdmin.ejs') %>
 
-    <h1 class="title">הוספת מורה</h1>
+    <h1 class="title">הוספת משתמש</h1>
     <form action="/users/register" method="post">
         <div class="user-reg">            
-            <input type="text" name="name" id="name" placeholder="הוסף שם המורה">
+            <input type="text" name="name" id="name" placeholder="הוסף שם המשתמש">
         </div>
         <div class="user-reg">            
-            <input type="text" name="email" id="email" placeholder="הוסף איימיל המורה">
+            <input type="password" name="password" id="password" placeholder="הוסף ת.ז">
         </div>
-        <div class="user-reg">            
-            <input type="password" name="password" id="password" placeholder="הוסף סיסמה">
-        </div>
-        <button id="sub-btn" class="btn btn-outline-success">הוסף</button>
+        <button id="sub-btn" class="btn btn-secondary">הוסף</button>
     </form>
     
 </body>
