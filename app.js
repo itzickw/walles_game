@@ -63,6 +63,10 @@ app.get("*", (req, res) => {
   res.send("This page doesnot work");
 });
 
+app.listen(process.env.port);
+
+/*
 app.listen(port, () => {
   console.log(`listing on port ${port}`);
 });
+ */
