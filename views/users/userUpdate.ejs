@@ -63,24 +63,57 @@
                             <% } %>
 
                             <% if (q.active) { %>
-                                <form action="<%= data.user._id %>/updateEnswer" method="post">
+                                <form action="<%= user._id %>/updateEnswer" method="post">
                                     <input type="text" name="qId" id="" value="<%= q.id %>" style="display:none;"> 
                                     <input type="text" name="questionnaireId" value="<%= skill._id %>" style="display: none;">
                                     <div class="question">
-                                        <h5 style="font-size: 20px;font-weight:bolder;"><%= q.text %>:</h5>
-                                        <div  style="display: inline-flex;">
-                                            <input type="text" name="answer" placeholder="<%= userAnswer %>"/> 
+                                        <div>
+                                            <h5 style="font-size: 20px;font-weight:bolder;"><%= q.text %>:</h5>
+            
+                                            <div  style="display: inline-flex;">
+            
+                                                <% if(!q.closed) { %>
+                                                    <input type="text" name="answer" placeholder="<%= userAnswer %>"/> 
+                                                <% } %>
+            
+                                                <% if(q.closed) { %>
+                                                    <% let options = q.options %>
+                                                    <% options.push(q.answer) %>
+            
+                                                    <% options = options
+                                                    .map(value => ({ value, sort: Math.random() }))
+                                                    .sort((a, b) => a.sort - b.sort)
+                                                    .map(({ value }) => value) %>
+            
+                                                    <% for(let i = 0; i < options.length; i++) { %> 
+                                                        <label for="<%= options[i] %>"><%= options[i] %></label> 
+                                                        <% if (userAnswer == options[i]) { %>
+                                                            <input type="radio" name="answer" id="options[i]" value="<%= options[i] %>" checked>
+                                                        <% } %>    
+                                                        <% if (userAnswer != options[i]) { %>
+                                                            <input type="radio" name="answer" id="options[i]" value="<%= options[i] %>">
+                                                        <% } %>                                               
+                                                    <% } %>
+                                                <% } %>
+                                                        
+                                            </div>
+                                            <div>
+                                                <button type="submit" class="btn btn-success">אישור</button>                         
+                                            </div>
+                                        </div>
+                                        <div style="margin: 30px; text-align:center;">
                                             <% if (pass) { %>
-                                                כל הכבוד!
+                                                <h6>כל הכבוד!</h6>
                                                 <%  grade = grade + 1 %>
                                             <% } %>
+                                            
                                             <% if (!pass  &&  userAnswer != "הכנס תשובה") { %>
                                                 <h6>לא נכון</h6>
                                             <% } %>
+                                            
                                             <% if (userAnswer == "הכנס תשובה") { %>
                                                 <h6>הכנס תשובה</h6>
-                                            <% } %>
-                                            <button type="submit" class="btn btn-success">אישור</button>                         
+                                            <% } %> 
                                         </div>
                                     </div>
                                 </form>
@@ -90,7 +123,7 @@
                     </div>                
                     <% grade = (grade / skill.neto) * 100 %>
                     ציון: <%= grade %>
-                    <% if(data.admin  ||  grade >= 80) { %>
+                    <% if(admin  ||  grade >= 80) { %>
                         <form action="<%= data.user._id %>/nextStage" method="post">
                             <button type="submit" class="btn btn-success link"><h6>מעבר שלב</h6></button>
                             <input type="number" name="skill"  value="<%= i %>" style="display: none;">                    
